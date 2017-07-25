@@ -110,6 +110,7 @@ protected:
 	Quackle::ComputerPlayer *m_computerPlayerToTest;
 	Quackle::ComputerPlayer *m_computerPlayer2ToTest;
 	bool m_quiet;
+	bool m_verbose; // Added this
 	QString m_gamesDir;
 	QString m_lexicon;
 	QString m_alphabet;

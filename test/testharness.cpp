@@ -64,7 +64,7 @@ checkPlayerName(const QString& computer)
 }
 
 TestHarness::TestHarness()
-	: m_computerPlayerToTest(0), m_computerPlayer2ToTest(0), m_quiet(false)
+	: m_computerPlayerToTest(0), m_computerPlayer2ToTest(0), m_quiet(false), m_verbose(false)
 {
 	m_gamesDir = "games";
 	m_dataManager.setComputerPlayers(Quackle::ComputerPlayerCollection::fullCollection());
@@ -97,7 +97,8 @@ const char *usage =
 "--letters; letters to anagram.\n"
 "--build; when mode is anagram, do not require that all letters be used.\n"
 "--quiet; print nothing during selfplay games (default false).\n"
-"--repetitions=integer; the number of games for selfplay (default 1000).\n";
+"--repetitions=integer; the number of games for selfplay (default 1000).\n"
+"--verbose; print only the game results during the selfplay games";
 
 void TestHarness::executeFromArguments()
 {
@@ -129,6 +130,7 @@ void TestHarness::executeFromArguments()
 	opts.addSwitch("build", &build);
 	opts.addSwitch("quiet", &m_quiet);
 	opts.addSwitch("help", &help);
+	opts.addSwitch("verbose", &m_verbose); // Added this control
 
 	if (!opts.parse())
 		return;
@@ -734,8 +736,10 @@ void TestHarness::selfPlayGame(unsigned int gameNumber, bool reports, bool playa
                 game.commitMove(tops[toPlay]);
             } else {
                 Quackle::Move compMove(game.haveComputerPlay());
-                UVcout << "with " << player.rack() << ", " << player.name()
-                       << " commits to " << compMove << endl;
+                if(m_verbose){ // Added
+	                UVcout << "with " << player.rack() << ", " << player.name()
+	                       << " commits to " << compMove << endl;
+                }
             }
         }
 	}
