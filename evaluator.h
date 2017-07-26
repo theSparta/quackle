@@ -59,6 +59,26 @@ public:
 	virtual double leaveValue(const LetterString &leave) const;
 };
 
+
+class ModifiedEvaluator: public ScorePlusLeaveEvaluator
+{
+public:
+	// Evaluator that takes a set of weights as coefficients for the following features: 
+	// Leave value
+	// Move score
+	ModifiedEvaluator(vector<double> weights, const int & size = 2)
+	{
+		assert(weights.size() == size); // assuming for two features currently
+		coeffs = weights;
+	}
+	virtual ~ModifiedEvaluator() {};
+
+	double equity(const GamePosition & position, const Move & move) const;
+
+private:
+	vector<double> coeffs;
+};
+
 }
 
 #endif

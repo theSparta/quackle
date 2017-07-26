@@ -76,7 +76,7 @@ double ScorePlusLeaveEvaluator::leaveValue(const LetterString &leave) const
 		return 0;
 
 	LetterString alphabetized = String::alphabetize(leave);
-	
+
 	if (QUACKLE_STRATEGY_PARAMETERS->superleave(alphabetized))
 		return QUACKLE_STRATEGY_PARAMETERS->superleave(alphabetized);
 
@@ -107,20 +107,20 @@ double ScorePlusLeaveEvaluator::leaveValue(const LetterString &leave) const
 					synergy += QUACKLE_STRATEGY_PARAMETERS->syn2(uniqleave[i], uniqleave[j]);
 
 			// TODO handle the Q
-			
+
 			bool holding_bad_tile = false;
 			for (unsigned int i = 0; i < uniqleave.length(); ++i) {
 				if (QUACKLE_STRATEGY_PARAMETERS->tileWorth(uniqleave[i]) < -5.5) {
 					holding_bad_tile = true;
 				}
 			}
-			
+
 			if ((synergy > 3.0) && !holding_bad_tile) {
 			    synergy += 1.5 * (synergy - 3.0);
 			}
 
 			value += synergy;
-		}    
+		}
 	}
 
 	int vowels = 0;
@@ -135,7 +135,7 @@ double ScorePlusLeaveEvaluator::leaveValue(const LetterString &leave) const
 			else
 				cons++;
 		}
-	} 
+	}
 
 	const float vcvalues[8][8] =
 	{
@@ -165,3 +165,7 @@ double ScorePlusLeaveEvaluator::leaveValue(const LetterString &leave) const
 	return value;
 }
 
+double ModifiedEvaluator::equity(const GamePosition &position, const Move &move) const
+{
+	return coeffs[0]* playerConsideration(position, move) + coeffs[1]* move.effectiveScore();
+}

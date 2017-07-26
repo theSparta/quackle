@@ -46,7 +46,8 @@ DataManager::DataManager()
     seedRandomNumbers((int)time(NULL));
 
 	m_alphabetParameters = new EnglishAlphabetParameters;
-	m_evaluator = new CatchallEvaluator;
+	// m_evaluator = new CatchallEvaluator;
+	m_evaluator = new NewCatchallEvaluator({1,1});
 	m_parameters = new EnglishParameters;
 	m_boardParameters = new EnglishBoard;
 	m_lexiconParameters = new LexiconParameters;
