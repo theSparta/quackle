@@ -26,7 +26,6 @@
 #include "alphabetparameters.h"
 #include "boardparameters.h"
 #include "evaluator.h"
-#include "catchall.h"
 #include "gameparameters.h"
 #include "lexiconparameters.h"
 #include "strategyparameters.h"

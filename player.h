@@ -21,6 +21,7 @@
 
 #include "rack.h"
 #include "uv.h"
+#include "evaluator.h"
 
 namespace Quackle
 {
@@ -84,6 +85,10 @@ public:
 	void loadInformationFromString(const UVString &info);
 	static Player makePlayerFromString(const UVString &info);
 
+	//evaluator function used by the specific player
+	void setEvaluator(Evaluator * evaluator);
+	Evaluator* getEvaluator() const;
+
 private:
 	UVString m_name;
 	UVString m_abbreviatedName;
@@ -93,6 +98,9 @@ private:
 
 	Rack m_rack;
 	int m_score;
+
+	// Addition to the player
+	Evaluator *m_evaluator;
 
 	Rack m_drawnLetters;
 	bool m_racksAreKnown;

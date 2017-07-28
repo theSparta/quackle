@@ -114,6 +114,7 @@ protected:
 	QString m_gamesDir;
 	QString m_lexicon;
 	QString m_alphabet;
+	vector<double> weights;
 };
 
 #endif

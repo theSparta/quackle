@@ -26,12 +26,12 @@
 using namespace Quackle;
 
 Player::Player()
-	: m_name(MARK_UV("No Name")), m_abbreviatedName(MARK_UV("NoName")), m_id(-1), m_playerType(ComputerPlayerType), m_computerPlayer(0), m_score(0), m_racksAreKnown(true)
+	: m_name(MARK_UV("No Name")), m_abbreviatedName(MARK_UV("NoName")), m_id(-1), m_playerType(ComputerPlayerType), m_computerPlayer(0), m_score(0), m_evaluator(nullptr), m_racksAreKnown(true)
 {
 }
 
 Player::Player(const UVString &name, int playerType, int id)
-	: m_name(name), m_abbreviatedName(name), m_id(id), m_playerType(playerType), m_computerPlayer(0), m_score(0), m_racksAreKnown(true)
+	: m_name(name), m_abbreviatedName(name), m_id(id), m_playerType(playerType), m_computerPlayer(0), m_score(0), m_evaluator(nullptr),  m_racksAreKnown(true)
 {
 }
 
@@ -123,3 +123,14 @@ UVOStream &operator<<(UVOStream &o, const Quackle::Player &player)
 	return o;
 }
 
+void Player::setEvaluator(Evaluator* evaluator)
+{
+	delete m_evaluator;
+	m_evaluator = evaluator;
+}
+
+Evaluator* Player::getEvaluator() const
+{
+	assert(m_evaluator != nullptr);
+	return m_evaluator;
+}

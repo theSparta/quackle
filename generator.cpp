@@ -134,8 +134,8 @@ void Generator::allCrosses()
 		if (QUACKLE_ALPHABET_PARAMETERS->isSomeLetter(board().letter(row, col))) {
 			board().setVCross(row, col, LetterBitset());
 		}
-		else { 
-			LetterString pre; 
+		else {
+			LetterString pre;
 			if (row > 0) {
 				for (int i = row - 1; i >= 0; i--) {
 					if (!QUACKLE_ALPHABET_PARAMETERS->isSomeLetter(board().letter(i, col))) {
@@ -186,7 +186,7 @@ void Generator::allCrosses()
 		if (QUACKLE_ALPHABET_PARAMETERS->isSomeLetter(board().letter(row, col))) {
 			board().setHCross(row, col, LetterBitset());
 		}
-		else { 
+		else {
 			LetterString pre;
 			if (col > 0) {
 				for (int i = col - 1; i >= 0; i--) {
@@ -259,7 +259,7 @@ void Generator::makeMove(const Move &move, bool regenerateCrosses)
 
 		if (endcol < board().width() - 1) {
 			hrows.push_back(row);
-			hcols.push_back(endcol + 1); 
+			hcols.push_back(endcol + 1);
 		}
 
 		for (int col = move.startcol; col <= endcol; col++) {
@@ -270,7 +270,7 @@ void Generator::makeMove(const Move &move, bool regenerateCrosses)
 						upempty = hookrow;
 						hookrow = -1;
 					}
-				} 
+				}
 				if (upempty >= 0) {
 					vrows.push_back(upempty);
 					vcols.push_back(col);
@@ -301,7 +301,7 @@ void Generator::makeMove(const Move &move, bool regenerateCrosses)
 
 		if (endrow < board().height() - 1) {
 			vrows.push_back(endrow + 1);
-			vcols.push_back(col); 
+			vcols.push_back(col);
 		}
 
 		for (int row = move.startrow; row <= endrow; row++) {
@@ -312,7 +312,7 @@ void Generator::makeMove(const Move &move, bool regenerateCrosses)
 						upempty = hookcol;
 						hookcol = -1;
 					}
-				} 
+				}
 				if (upempty >= 0) {
 					hrows.push_back(row);
 					hcols.push_back(upempty);
@@ -342,7 +342,7 @@ void Generator::makeMove(const Move &move, bool regenerateCrosses)
 		if (QUACKLE_ALPHABET_PARAMETERS->isSomeLetter(board().letter(row, col))) {
 			board().setVCross(row, col, LetterBitset());
 		}
-		else { 
+		else {
 			LetterString pre;
 			if (row > 0) {
 				for (int i = row - 1; i >= 0; i--) {
@@ -393,8 +393,8 @@ void Generator::makeMove(const Move &move, bool regenerateCrosses)
 		if (QUACKLE_ALPHABET_PARAMETERS->isSomeLetter(board().letter(row, col))) {
 			board().setHCross(row, col, LetterBitset());
 		}
-		else { 
-			LetterString pre; 
+		else {
+			LetterString pre;
 			if (col > 0) {
 				for (int i = col - 1; i >= 0; i--) {
 					if (!QUACKLE_ALPHABET_PARAMETERS->isSomeLetter(board().letter(row, i))) {
@@ -471,7 +471,7 @@ bool Generator::checksuffix(int i, const LetterString &suffix) {
 				return false;
 			}
 		}
-	} 
+	}
 	else if (true) {
 	//else if (c < sc) {
 		if (lastchild) {
@@ -488,9 +488,9 @@ bool Generator::checksuffix(int i, const LetterString &suffix) {
 
 LetterBitset Generator::gaddagFitbetween(const LetterString &pre, const LetterString &suf)
 {
-// 	UVcout << "fit " 
+// 	UVcout << "fit "
 // 		 << QUACKLE_ALPHABET_PARAMETERS->userVisible(pre)
-// 		 << "_" 
+// 		 << "_"
 // 		 << QUACKLE_ALPHABET_PARAMETERS->userVisible(suf) << endl;
 	LetterBitset crosses;
 	/* process the suffix once */
@@ -516,11 +516,11 @@ LetterBitset Generator::gaddagFitbetween(const LetterString &pre, const LetterSt
 				break;
 			}
 		}
-		
+
 		if (n && n->isTerminal()) {
 			crosses.set(childLetter - QUACKLE_FIRST_LETTER);
 		}
-	}	
+	}
 	return crosses;
 }
 
@@ -549,7 +549,7 @@ LetterBitset Generator::fitbetween(const LetterString &pre, const LetterString &
 			// UVcout << c;
 		}
 	}
-	
+
 	//UVcout << " crosses: " << crosses << " " << cross2string(crosses) << endl;
 	return crosses;
 }
@@ -605,7 +605,7 @@ UVString Generator::cross2string(const LetterBitset &cross)
 
 void Generator::gordongoon(int pos, char L, LetterString word, const GaddagNode *node)
 {
-	//UVcout << "gordongoon(" << pos << ", " << L << ", " << word << ", " << newarc << ", " << oldarc << ")" << 
+	//UVcout << "gordongoon(" << pos << ", " << L << ", " << word << ", " << newarc << ", " << oldarc << ")" <<
 	//        " horiz: " << m_gordonhoriz << endl;
 
 	if (pos <= 0) {
@@ -619,7 +619,7 @@ void Generator::gordongoon(int pos, char L, LetterString word, const GaddagNode 
 		if (m_gordonhoriz) {
 			curcol += pos;
 			leftcol += pos - 1;
-		}          
+		}
 		else {
 			currow += pos;
 			leftrow += pos - 1;
@@ -633,7 +633,7 @@ void Generator::gordongoon(int pos, char L, LetterString word, const GaddagNode 
 		newWord += L;
 		newWord += word;
 
-		bool emptyleft = true; 
+		bool emptyleft = true;
 		bool roomtoleft = true;
 		bool atboardedge = false;
 
@@ -679,7 +679,7 @@ void Generator::gordongoon(int pos, char L, LetterString word, const GaddagNode 
 			if (MoveList::equityComparator(best, move)) {
 				best = move;
 			}
-			// UVcout << "found a move: " << move << " score: " << move.score << ", equity: " << move.equity << 
+			// UVcout << "found a move: " << move << " score: " << move.score << ", equity: " << move.equity <<
 			// " outputted by leftmoving loop" << endl;
 		}
 
@@ -697,7 +697,7 @@ void Generator::gordongoon(int pos, char L, LetterString word, const GaddagNode 
 
         if (m_gordonhoriz) {
             rightcol++;
-        }          
+        }
         else {
             rightrow++;
         }
@@ -711,7 +711,7 @@ void Generator::gordongoon(int pos, char L, LetterString word, const GaddagNode 
         if ((node != 0) && emptyleft && !atrightedge) {
             gordongen(1, newWord, node);
         }
-	} 
+	}
 	else {
 		// UVcout << "looking to the right" << endl;
 
@@ -723,7 +723,7 @@ void Generator::gordongoon(int pos, char L, LetterString word, const GaddagNode 
 		if (m_gordonhoriz) {
 			curcol += pos;
 			rightcol += pos + 1;
-		}          
+		}
 		else {
 			currow += pos;
 			rightrow += pos + 1;
@@ -747,7 +747,7 @@ void Generator::gordongoon(int pos, char L, LetterString word, const GaddagNode 
 				// UVcout << "can't record " << word << " here because of the " << board().letter(rightrow, rightcol) << endl;
 			}
 			else {
-				// UVcout << "yay! " << (char)(rightcol + 'A') << rightrow + 1 << " is empty!" << endl; 
+				// UVcout << "yay! " << (char)(rightcol + 'A') << rightrow + 1 << " is empty!" << endl;
 				// UVcout << board() << endl;
 			}
 		}
@@ -783,7 +783,7 @@ void Generator::gordongoon(int pos, char L, LetterString word, const GaddagNode 
 			if (MoveList::equityComparator(best, move)) {
 				best = move;
 			}
-			// UVcout << "found a move: " << move << " score: " << move.score << ", equity: " << move.equity << 
+			// UVcout << "found a move: " << move << " score: " << move.score << ", equity: " << move.equity <<
 			//      " outputted by rightmoving loop" << endl;
 		}
 
@@ -797,7 +797,7 @@ void Generator::gordongoon(int pos, char L, LetterString word, const GaddagNode 
 	}
 }
 
-void Generator::gordongen(int pos, const LetterString &word, const GaddagNode *node) 
+void Generator::gordongen(int pos, const LetterString &word, const GaddagNode *node)
 {
 	// UVcout << "gordongen(" << pos << ", " << word << ", " << i << ")" << " horiz: " << m_gordonhoriz << endl;
 
@@ -834,7 +834,7 @@ void Generator::gordongen(int pos, const LetterString &word, const GaddagNode *n
 		for (const GaddagNode* child = node->firstChild(); child; child = child->nextSibling()) {
 			Letter childLetter = child->letter();
 
-			if ((m_counts[childLetter] <= 0) 
+			if ((m_counts[childLetter] <= 0)
 					|| !cross.test(childLetter - QUACKLE_FIRST_LETTER)) {
 				continue;
 			}
@@ -875,7 +875,7 @@ void Generator::gordongen(int pos, const LetterString &word, const GaddagNode *n
 	}
 }
 
-void Generator::extendright(const LetterString &partial, int i, 
+void Generator::extendright(const LetterString &partial, int i,
 		int row, int col, int edge, int righttiles, bool horizontal)
 {
 	if (i == 0) {  // is this really correct?
@@ -932,7 +932,7 @@ void Generator::extendright(const LetterString &partial, int i,
 							couldend = false;
 						}
 					}
-					if (couldend) { 
+					if (couldend) {
 						Move move;
 						move.action = Move::Place;
 						move.setTiles(partial + c);
@@ -954,7 +954,7 @@ void Generator::extendright(const LetterString &partial, int i,
 						int laid = move.wordTilesWithNoPlayThru().length();
 						bool onetilevert = (!move.horizontal) && (laid == 1);
 						bool ignore = onetilevert && !board().hcross(row, col).all();
-						
+
 						if (1 || !ignore)
 						{
 							if (m_recordall) {
@@ -974,13 +974,13 @@ void Generator::extendright(const LetterString &partial, int i,
 				if (dirpos < edgeDirpos) {
 					m_counts[c]--;
 					m_laid++;
-					extendright(partial + c, p, row, col, 
+					extendright(partial + c, p, row, col,
 							0, righttiles + 1, horizontal);
 					m_counts[c]++;
 					m_laid--;
 				}
 			}
-		}       
+		}
 		if ((m_counts[QUACKLE_BLANK_MARK] >= 1)) {
 			LetterBitset cross;
 			if (horizontal) {
@@ -997,7 +997,7 @@ void Generator::extendright(const LetterString &partial, int i,
 							couldend = false;
 						}
 					}
-					if (couldend) { 
+					if (couldend) {
 						Move move;
 						move.action = Move::Place;
 						move.setTiles(partial + QUACKLE_ALPHABET_PARAMETERS->setBlankness(c));
@@ -1016,10 +1016,10 @@ void Generator::extendright(const LetterString &partial, int i,
 						int laid = move.wordTilesWithNoPlayThru().length();
 						bool onetilevert = (!move.horizontal) && (laid == 1);
 						bool ignore = onetilevert && !board().hcross(row, col).all();
-																								
+
 						if (1 || !ignore)
 						{
-							if (m_recordall) { 
+							if (m_recordall) {
 								m_moveList.push_back(move);
 							}
 
@@ -1036,7 +1036,7 @@ void Generator::extendright(const LetterString &partial, int i,
 				if (dirpos < edgeDirpos) {
 					m_counts[QUACKLE_BLANK_MARK]--;
 					m_laid++;
-					extendright(partial + QUACKLE_ALPHABET_PARAMETERS->setBlankness(c), p, row, col, 
+					extendright(partial + QUACKLE_ALPHABET_PARAMETERS->setBlankness(c), p, row, col,
 							0, righttiles + 1, horizontal);
 					m_counts[QUACKLE_BLANK_MARK]++;
 					m_laid--;
@@ -1060,7 +1060,7 @@ void Generator::extendright(const LetterString &partial, int i,
 			bool endofthrough = false;
 
 			if (dirpos < edgeDirpos) {
-				extendright(partial + (Letter)QUACKLE_PLAYED_THRU_MARK, p, 
+				extendright(partial + (Letter)QUACKLE_PLAYED_THRU_MARK, p,
 						row, col, 0, righttiles + 1, horizontal);
 
 #ifdef DEBUG_GENERATOR
@@ -1103,14 +1103,14 @@ void Generator::extendright(const LetterString &partial, int i,
 					move.horizontal = horizontal;
 					move.score = board().score(move, &move.isBingo);
 					move.equity = equity(move);
-						
+
 					int laid = move.wordTilesWithNoPlayThru().length();
 					bool onetilevert = (!move.horizontal) && (laid == 1);
 					bool ignore = onetilevert && !board().hcross(row, col).all();
-					
+
 					if (1 || !ignore)
 					{
-						
+
 						if (m_recordall) {
 							m_moveList.push_back(move);
 						}
@@ -1130,13 +1130,13 @@ void Generator::extendright(const LetterString &partial, int i,
 		else if (!lastchild)
 			// else if ((c < boardc) && (!lastchild))
 		{
-			extendright(partial, i + 1, row, col, 
+			extendright(partial, i + 1, row, col,
 					edge + 1, righttiles, horizontal);
 		}
 	}
 }
 
-void Generator::leftpart(const LetterString &partial, int i, int limit, 
+void Generator::leftpart(const LetterString &partial, int i, int limit,
 		int row, int col, int edge, bool horizontal)
 {
 #ifdef DEBUG_GENERATOR
@@ -1179,7 +1179,7 @@ void Generator::leftpart(const LetterString &partial, int i, int limit,
 		if (!lastchild) {
 			leftpart(partial, i + 1, limit, row, col, edge + 1, horizontal);
 		}
-	} 
+	}
 }
 
 void Generator::setupCounts(const LetterString &letters)
@@ -1189,7 +1189,8 @@ void Generator::setupCounts(const LetterString &letters)
 
 double Generator::equity(const Move &move) const
 {
-	return QUACKLE_EVALUATOR->equity(m_position, move);
+	assert(m_evaluator != nullptr);
+	return m_evaluator->equity(m_position, move);
 }
 
 Move Generator::generate()
@@ -1228,7 +1229,7 @@ Move Generator::generate()
 				for (int i = col - 1; i >= 0; i--)
 				{
 					// UVcout << "board().vcross[" << row << "][" << i << "] = " << board().vcross(row, i) << endl;
-					
+
 					if (!QUACKLE_ALPHABET_PARAMETERS->isSomeLetter(board().letter(row, i)) && board().vcross(row, i).all()) {
 						if (i == 0) {
 							k++;
@@ -1453,7 +1454,7 @@ Move Generator::gordongenerate()
 void Generator::spit(int i, const LetterString &prefix, int flags)
 {
 	// UVcout << "spit called... i: " << i << ", prefix: " << prefix << endl;
-	
+
 	unsigned int p;
 	Letter c;
 	bool t;
@@ -1540,7 +1541,7 @@ void Generator::spit(int i, const LetterString &prefix, int flags)
 void Generator::wordspit(int i, const LetterString &prefix, int flags)
 {
 	// UVcout << "spit called... i: " << i << ", prefix: " << prefix << endl;
-	
+
 	unsigned int p;
 	Letter c;
 	bool t;
@@ -1604,7 +1605,7 @@ Move Generator::exchange()
 
 	const int rackSize = rack().tiles().length();
 	const int permutations = 1 << rackSize;
-	
+
 	for (int i = 1; i < permutations; i++)
 	{
 		LetterString thrown;
@@ -1623,7 +1624,7 @@ Move Generator::exchange()
 			if (m_recordall)
 				m_moveList.push_back(move);
 
-			if (MoveList::equityComparator(best, move)) 
+			if (MoveList::equityComparator(best, move))
 				best = move;
 
 			throwmap[move.tiles()] = true;
@@ -1653,7 +1654,7 @@ Move Generator::findstaticbest(bool canExchange)
 
 			if (QUACKLE_LEXICON_PARAMETERS->hasGaddag())
 				gordongenerate();
-			else 
+			else
 				generate();
 
 			// UVcout << "gaddag says: " << best << " " << best.score << " " << best.equity;
@@ -1680,7 +1681,7 @@ void Generator::gaddagAnagram(const GaddagNode *node, const LetterString &prefix
 			break;
 	    }
 
-		if (m_counts[childLetter] <= 0) 
+		if (m_counts[childLetter] <= 0)
 			continue;
 
 	    m_counts[childLetter]--;
@@ -1806,7 +1807,7 @@ Move Generator::anagram()
 			if (m_recordall)
 				m_moveList.push_back(move);
 
-			if (MoveList::equityComparator(best, move)) 
+			if (MoveList::equityComparator(best, move))
 				best = move;
 		}
 	}
@@ -1817,12 +1818,12 @@ Move Generator::anagram()
 bool Generator::isAcceptableWord(const LetterString &word)
 {
 	WordList results = anagramLetters(word);
-	
+
 	WordList::const_iterator end = results.end();
 	for (WordList::const_iterator it = results.begin(); it != end; ++it)
 		if ((*it) == word)
 			return true;
-	
+
 	return false;
 }
 
@@ -1851,8 +1852,8 @@ void Generator::storeWordInfo(WordWithInfo *wordWithInfo)
 	wordWithInfo->probability = Bag::probabilityOfDrawingFromFullBag(wordWithInfo->wordLetterString);
 
 	m_wordspat.clear();
-	wordspit(1, LetterString(), 0);	
-	
+	wordspit(1, LetterString(), 0);
+
 	vector<WordWithInfo>::const_iterator end = m_wordspat.end();
 	for (vector<WordWithInfo>::const_iterator it = m_wordspat.begin(); it != end; ++it)
 	{

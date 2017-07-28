@@ -79,6 +79,7 @@ public:
 	// set generator to generate on this position
 	// (using current player's rack)
 	void setPosition(const GamePosition &position);
+	void setEvaluator(Evaluator * evaluator);
 	const GamePosition &position() const;
 
 	// place a move on the board; if regenerateCrosses is false,
@@ -165,8 +166,14 @@ private:
 	bool m_recordall;
 	bool m_gordonhoriz;
 	int m_anchorrow, m_anchorcol;
+
+	Evaluator *m_evaluator;
 };
 
+inline void Generator::setEvaluator(Evaluator *evaluator)
+{
+	m_evaluator = evaluator;
+}
 
 inline void Generator::setPosition(const GamePosition &position)
 {

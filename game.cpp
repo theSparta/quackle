@@ -251,6 +251,7 @@ GamePosition::GamePosition()
 void GamePosition::kibitz(int nmoves)
 {
 	Generator generator(*this);
+	generator.setEvaluator(currentEvaluator());
 	generator.kibitz(nmoves, exchangeAllowed()? Generator::RegularKibitz : Generator::CannotExchange);
 
 	m_moves = generator.kibitzList();
@@ -474,22 +475,22 @@ int GamePosition::calculateScore(const Move &move)
 
 double GamePosition::calculateEquity(const Move &move)
 {
-	return QUACKLE_EVALUATOR->equity(*this, move);
+	return currentEvaluator()->equity(*this, move);
 }
 
 double GamePosition::calculatePlayerConsideration(const Move &move)
 {
-	return QUACKLE_EVALUATOR->playerConsideration(*this, move);
+	return currentEvaluator()->playerConsideration(*this, move);
 }
 
 double GamePosition::leaveValue(const LetterString &leave) const
 {
-	return QUACKLE_EVALUATOR->leaveValue(leave);
+	return currentEvaluator()->leaveValue(leave);
 }
 
 double GamePosition::calculateSharedConsideration(const Move &move)
 {
-	return QUACKLE_EVALUATOR->sharedConsideration(*this, move);
+	return currentEvaluator()->sharedConsideration(*this, move);
 }
 
 Bag GamePosition::unseenBag() const

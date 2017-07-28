@@ -239,6 +239,9 @@ public:
 	const Player &currentPlayer() const;
 	Player &currentPlayer();
 
+	// get the Evaluator function used by current player
+	Evaluator *currentEvaluator() const;
+
 	// Returns true if currentPlayer was set, false if no player with
 	// this id was found.
 	bool setCurrentPlayer(int playerID);
@@ -449,6 +452,11 @@ protected:
 	// removed from.
 	bool removeLetters(const LetterString &letters);
 };
+
+inline Evaluator *GamePosition::currentEvaluator() const
+{
+	return currentPlayer().getEvaluator();
+}
 
 inline const Player &GamePosition::currentPlayer() const
 {

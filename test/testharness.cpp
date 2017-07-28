@@ -35,6 +35,7 @@
 #include <strategyparameters.h>
 #include <enumerator.h>
 #include <reporter.h>
+#include <catchall.h>
 
 #include <quackleio/dictimplementation.h>
 #include <quackleio/flexiblealphabet.h>
@@ -54,6 +55,7 @@ checkPlayerName(const QString& computer)
 	const Quackle::Player &player = QUACKLE_COMPUTER_PLAYERS.playerForName(QuackleIO::Util::qstringToString(computer), playerFound);
 	if (playerFound)
 	{
+		// UVcout << player.storeInformationToString() << endl;
 		return player.computerPlayer();
 	}
 	else
@@ -109,6 +111,7 @@ void TestHarness::executeFromArguments()
 	QString computer2;
 	QString seedString;
 	QString repString;
+	QStringList weightsString;
 	bool build;
 	QString letters;
 	bool help;
@@ -125,6 +128,7 @@ void TestHarness::executeFromArguments()
 	opts.addOption('r', "repetitions", &repString);
 	opts.addOption('t', "letters", &letters);
 	opts.addRepeatableOption("position", &m_positions);
+	opts.addVarLengthOption("weights", &weightsString);
 
 	opts.addSwitch("report", &report);
 	opts.addSwitch("build", &build);
@@ -156,6 +160,14 @@ void TestHarness::executeFromArguments()
 	if (!repString.isNull())
 	        reps = repString.toUInt();
 
+	if(!weightsString.isEmpty()){
+		for (QStringList::iterator it = weightsString.begin(); it != weightsString.end(); ++it)
+			weights.push_back(it->toDouble());
+	}
+	else{
+		// this can be modified dependent upon the number of features used
+		weights = {1.0, 2.0};
+	}
 
 	m_computerPlayerToTest = checkPlayerName(computer);
 	m_computerPlayer2ToTest = checkPlayerName(computer2);
@@ -674,11 +686,14 @@ void TestHarness::selfPlayGame(unsigned int gameNumber, bool reports, bool playa
 	Quackle::Player compyA(m_computerPlayerToTest->name() + MARK_UV(" A"), Quackle::Player::ComputerPlayerType, 0);
 	compyA.setAbbreviatedName(MARK_UV("A"));
 	compyA.setComputerPlayer(m_computerPlayerToTest);
+	compyA.setEvaluator(QUACKLE_EVALUATOR);
 	players.push_back(compyA);
 
 	Quackle::Player compyB(m_computerPlayer2ToTest->name() + MARK_UV(" B"), Quackle::Player::ComputerPlayerType, 1);
 	compyB.setAbbreviatedName(MARK_UV("B"));
 	compyB.setComputerPlayer(m_computerPlayer2ToTest);
+	Evaluator* compyBEvaluator = new NewCatchallEvaluator(weights);
+	compyB.setEvaluator(compyBEvaluator);
 	players.push_back(compyB);
 
 	game.setPlayers(players);
