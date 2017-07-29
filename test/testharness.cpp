@@ -111,7 +111,7 @@ void TestHarness::executeFromArguments()
 	QString computer2;
 	QString seedString;
 	QString repString;
-	QStringList weightsString;
+	QString weightsString;
 	bool build;
 	QString letters;
 	bool help;
@@ -128,7 +128,7 @@ void TestHarness::executeFromArguments()
 	opts.addOption('r', "repetitions", &repString);
 	opts.addOption('t', "letters", &letters);
 	opts.addRepeatableOption("position", &m_positions);
-	opts.addVarLengthOption("weights", &weightsString);
+	opts.addOption('w', "weights", &weightsString);
 
 	opts.addSwitch("report", &report);
 	opts.addSwitch("build", &build);
@@ -161,7 +161,9 @@ void TestHarness::executeFromArguments()
 	        reps = repString.toUInt();
 
 	if(!weightsString.isEmpty()){
-		for (QStringList::iterator it = weightsString.begin(); it != weightsString.end(); ++it)
+		QRegExp rx("(\\|)");
+		QStringList weightsList = weightsString.split(rx);
+		for (QStringList::iterator it = ++weightsList.begin(); it != weightsList.end(); ++it)
 			weights.push_back(it->toDouble());
 	}
 	else{
