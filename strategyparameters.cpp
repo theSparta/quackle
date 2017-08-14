@@ -37,8 +37,9 @@ void StrategyParameters::initialize(const string &lexicon)
 	bool hasWorths = loadWorths(DataManager::self()->findDataFile("strategy", lexicon, "worths"));
 	bool hasVcPlace = loadVcPlace(DataManager::self()->findDataFile("strategy", lexicon, "vcplace"));
 	bool hasBogowin = loadBogowin(DataManager::self()->findDataFile("strategy", lexicon, "bogowin"));
-	bool hasSuperleaves = loadSuperleaves(DataManager::self()->findDataFile("strategy", lexicon, "superleaves")); 	
-	m_initialized = hasSyn2 && hasWorths && hasVcPlace && hasBogowin && hasSuperleaves;
+	bool hasSuperleaves = loadSuperleaves(DataManager::self()->findDataFile("strategy", lexicon, "superleaves"));
+	bool hasSynergies = loadSynergies(DataManager::self()->findDataFile("strategy", lexicon, "synergies"));
+	m_initialized = hasSyn2 && hasWorths && hasVcPlace && hasBogowin && hasSuperleaves && hasSynergies;
 }
 
 bool StrategyParameters::loadSyn2(const string &filename)
@@ -106,10 +107,10 @@ bool StrategyParameters::loadBogowin(const string &filename)
 		file >> lead;
 		file >> unseen;
 		file >> wins;
-		
+
 		m_bogowin[lead + 300][unseen] = wins;
 	}
-	
+
 	file.close();
 	return true;
 }
@@ -177,23 +178,23 @@ bool StrategyParameters::loadVcPlace(const string &filename)
 
 		if (file.eof())
 			break;
-	
+
 		unsigned int length;
 		file >> length;
-		
+
 		if (file.eof())
 			break;
 
 		unsigned int consbits;
 		file >> consbits;
-	
+
 		if (file.eof())
 			break;
 
 		double value;
 		file >> value;
 
-		if ((start < QUACKLE_MAXIMUM_BOARD_SIZE) && 
+		if ((start < QUACKLE_MAXIMUM_BOARD_SIZE) &&
 			(length < QUACKLE_MAXIMUM_BOARD_SIZE) &&
 			(consbits < 128))
 
@@ -201,7 +202,7 @@ bool StrategyParameters::loadVcPlace(const string &filename)
 	}
 
 	file.close();
-	return true;	
+	return true;
 }
 
 bool StrategyParameters::loadSuperleaves(const string &filename)
@@ -233,12 +234,30 @@ bool StrategyParameters::loadSuperleaves(const string &filename)
 
 		intvalue = (unsigned int)(intvalueint) * 256 + (unsigned int)(intvaluefrac);
 		LetterString leave = LetterString(leavebytes, leavesize);
-	
+
 		double value = (double(intvalue) / 256.0) - 128.0;
 		m_superleaves.insert(m_superleaves.end(),
 				     SuperLeavesMap::value_type(leave, value));
 	}
-	
+
 	file.close();
-	return true;	
+	return true;
+}
+
+bool StrategyParameters::loadSynergies(const string & filename){
+	m_synergies.clear();
+	ifstream file(filename);
+	if (!file.is_open())
+	{
+		cerr << "Could not open " << filename << " to load superleave heuristic" << endl;
+		return false;
+	}
+	string leave;
+	double leaveSynergy;
+	while(file >> leave >> leaveSynergy)
+	{
+		m_synergies[leave] = leaveSynergy;
+	}
+	file.close();
+	return true;
 }

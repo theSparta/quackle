@@ -167,5 +167,44 @@ double ScorePlusLeaveEvaluator::leaveValue(const LetterString &leave) const
 
 double ModifiedEvaluator::equity(const GamePosition &position, const Move &move) const
 {
-	return coeffs[0]* playerConsideration(position, move) + coeffs[1]* move.effectiveScore();
+
+	LetterString leave = (position.currentPlayer().rack() - move).tiles();
+	leave = String::alphabetize(leave);
+	string leaveString = QUACKLE_ALPHABET_PARAMETERS->userVisible(leave);
+	// cout << "leave " << leaveString << " " << QUACKLE_STRATEGY_PARAMETERS->synergy(leaveString) << endl;
+	// cout << "leave " <<  (position.currentPlayer().rack() - move).toString() << endl;
+	// cout << "move" << move << endl;
+	const int sz = coeffs.size();
+	double features[sz];
+
+	int vowelMinusCons = 0;
+	int num_blanks = 0;
+
+	const LetterString::const_iterator leaveEnd(leave.end());
+	for (LetterString::const_iterator leaveIt = leave.begin(); leaveIt != leaveEnd; ++leaveIt)
+	{
+		if (*leaveIt != QUACKLE_BLANK_MARK)
+		{
+			if (QUACKLE_ALPHABET_PARAMETERS->isVowel(*leaveIt))
+				vowelMinusCons++;
+			else
+				vowelMinusCons--;
+		}
+		else
+			num_blanks++;
+	}
+
+	features[0] = move.effectiveScore();
+	features[1] = QUACKLE_STRATEGY_PARAMETERS->synergy(leaveString);
+	// features[0] = leaveValue(leave);
+	// features[2] = vowelMinusCons;
+	// features[3] = num_blanks;
+	// cout << ;
+
+	double equity =  0;
+	for(int i = 0 ;i < sz ; i++)
+		equity += coeffs[i] * features[i];
+
+	return equity;
 }
+

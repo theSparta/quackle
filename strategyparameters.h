@@ -20,6 +20,7 @@
 #define QUACKLE_STRATEGYPARAMETERS_H
 
 #include <map>
+#include <unordered_map>
 #include "alphabetparameters.h"
 
 namespace Quackle
@@ -39,14 +40,16 @@ public:
 	double vcPlace(int start, int length, int consbits);
 	double bogowin(int lead, int unseen, int blanks);
 	double superleave(LetterString leave);
-	
+	double synergy(string leave);
+
 protected:
 	bool loadSyn2(const string &filename);
 	bool loadWorths(const string &filename);
 	bool loadVcPlace(const string &filename);
 	bool loadBogowin(const string &filename);
 	bool loadSuperleaves(const string &filename);
-	
+	bool loadSynergies(const string & filename);
+
 	int mapLetter(Letter letter) const;
 
 	double m_syn2[QUACKLE_FIRST_LETTER + QUACKLE_MAXIMUM_ALPHABET_SIZE][QUACKLE_FIRST_LETTER + QUACKLE_MAXIMUM_ALPHABET_SIZE];
@@ -58,6 +61,8 @@ protected:
 	double m_bogowin[m_bogowinArrayWidth][m_bogowinArrayHeight];
         typedef map<LetterString, double> SuperLeavesMap;
 	SuperLeavesMap m_superleaves;
+		typedef unordered_map<string,double> SynergyMap;  // To store the synergy leave values
+	SynergyMap m_synergies;
 	bool m_initialized;
 };
 
@@ -114,6 +119,13 @@ inline double StrategyParameters::superleave(LetterString leave)
 	if (leave.length() == 0)
 		return 0.0;
 	return m_superleaves[leave];
+}
+
+inline double StrategyParameters::synergy(string leave)
+{
+	if(leave.length() == 0 || leave.length() == 7)
+		return 0.0;
+	return m_synergies[leave];
 }
 
 }

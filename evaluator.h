@@ -66,7 +66,7 @@ public:
 	// Evaluator that takes a set of weights as coefficients for the following features: 
 	// Leave value
 	// Move score
-	ModifiedEvaluator(vector<double> weights, const unsigned int & size = 2)
+	ModifiedEvaluator(vector<double> weights, const unsigned int & size)
 	{
 		assert(weights.size() == size); // assuming for two features currently
 		coeffs = weights;

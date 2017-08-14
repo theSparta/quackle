@@ -110,6 +110,7 @@ void TestHarness::executeFromArguments()
 	QString computer;
 	QString computer2;
 	QString seedString;
+	QString weightsSizeString;
 	QString repString;
 	QString weightsString;
 	bool build;
@@ -118,6 +119,7 @@ void TestHarness::executeFromArguments()
 	bool report;
 	unsigned int seed = numeric_limits<unsigned int>::max();
 	unsigned int reps = 1000;
+	weightsSize = 2;
 
 	opts.addOption('c', "computer", &computer);
 	opts.addOption('d', "computer2", &computer2);
@@ -125,6 +127,7 @@ void TestHarness::executeFromArguments()
 	opts.addOption('l', "lexicon", &m_lexicon);
 	opts.addOption('m', "mode", &mode);
 	opts.addOption('s', "seed", &seedString);
+	opts.addOption('z', "weightsize", &weightsSizeString);
 	opts.addOption('r', "repetitions", &repString);
 	opts.addOption('t', "letters", &letters);
 	opts.addRepeatableOption("position", &m_positions);
@@ -159,6 +162,8 @@ void TestHarness::executeFromArguments()
 	        seed = seedString.toUInt();
 	if (!repString.isNull())
 	        reps = repString.toUInt();
+	if (!weightsSizeString.isNull())
+			weightsSize = weightsSizeString.toUInt();
 
 	if(!weightsString.isEmpty()){
 		QRegExp rx("(\\|)");
@@ -168,13 +173,16 @@ void TestHarness::executeFromArguments()
 	}
 	else{
 		// this can be modified dependent upon the number of features used
-		weights = {1.0, 2.0};
+		weights = vector<double> (weightsSize, 1.0);
+		weights[1] = 0.05; //{1.0, 1.0, 0, 0};
 	}
 
 	m_computerPlayerToTest = checkPlayerName(computer);
 	m_computerPlayer2ToTest = checkPlayerName(computer2);
 
 	startUp();
+
+	UVcout << Bag::probabilityOfDrawingFromFullBag("AA") << endl;
 
 	if (mode == "positions")
 		testPositions();
@@ -660,10 +668,9 @@ void TestHarness::testReport(bool html)
 			{
 				UVString report;
 				Quackle::Reporter::reportGame(*game, m_computerPlayerToTest, &report);
-				UVcout << report << endl;
+				UVcout <<  report << endl;
 			}
 		}
-
 		delete game;
 	}
 }
@@ -688,13 +695,15 @@ void TestHarness::selfPlayGame(unsigned int gameNumber, bool reports, bool playa
 	Quackle::Player compyA(m_computerPlayerToTest->name() + MARK_UV(" A"), Quackle::Player::ComputerPlayerType, 0);
 	compyA.setAbbreviatedName(MARK_UV("A"));
 	compyA.setComputerPlayer(m_computerPlayerToTest);
-	compyA.setEvaluator(QUACKLE_EVALUATOR);
+	Evaluator *compyAEvaluator = new NewCatchallEvaluator({1, 0}, 2);
+	// *compyAEvaluator = *QUACKLE_EVALUATOR;
+	compyA.setEvaluator(compyAEvaluator);
 	players.push_back(compyA);
 
 	Quackle::Player compyB(m_computerPlayer2ToTest->name() + MARK_UV(" B"), Quackle::Player::ComputerPlayerType, 1);
 	compyB.setAbbreviatedName(MARK_UV("B"));
 	compyB.setComputerPlayer(m_computerPlayer2ToTest);
-	Evaluator* compyBEvaluator = new NewCatchallEvaluator(weights);
+	Evaluator* compyBEvaluator = new NewCatchallEvaluator(weights, weightsSize);
 	compyB.setEvaluator(compyBEvaluator);
 	players.push_back(compyB);
 
@@ -762,7 +771,7 @@ void TestHarness::selfPlayGame(unsigned int gameNumber, bool reports, bool playa
 	}
 
 	int secondsElapsed = static_cast<int>(time.elapsed() / 1000);
-	if (!m_quiet) {
+	if (m_verbose) {
 		UVcout << "Game " << gameNumber << " played in " << secondsElapsed
 	           << " seconds with " << i << " moves" << endl;
 	}
@@ -776,38 +785,38 @@ void TestHarness::selfPlayGame(unsigned int gameNumber, bool reports, bool playa
 	Quackle::Reporter::reportGame(game, &playah, &report);
 	if (!m_quiet) { UVcout << report << endl; }
 
-	QString gamesDir = m_gamesDir;
-	gamesDir.replace("PLAYERNAME", QuackleIO::Util::uvStringToQString(m_computerPlayerToTest->name()));
-	gamesDir.replace(" ", "_");
-	QDir::current().mkdir(gamesDir);
+	// QString gamesDir = m_gamesDir;
+	// gamesDir.replace("PLAYERNAME", QuackleIO::Util::uvStringToQString(m_computerPlayerToTest->name()));
+	// gamesDir.replace(" ", "_");
+	// QDir::current().mkdir(gamesDir);
 
-	QString joinedCompyName = QuackleIO::Util::uvStringToQString(m_computerPlayer2ToTest->name());
-	joinedCompyName.replace(" ", "_");
-	QFile outFile(QString("%1/%2-game-%3.gcg").arg(gamesDir).arg(joinedCompyName).arg(gameNumber));
+	// QString joinedCompyName = QuackleIO::Util::uvStringToQString(m_computerPlayer2ToTest->name());
+	// joinedCompyName.replace(" ", "_");
+	// QFile outFile(QString("%1/%2-game-%3.gcg").arg(gamesDir).arg(joinedCompyName).arg(gameNumber));
 
-	if (!outFile.open(QIODevice::WriteOnly | QIODevice::Text))
-	{
-		UVcout << "Could not open gcg output file" << endl;
-		return;
-	}
+	// if (!outFile.open(QIODevice::WriteOnly | QIODevice::Text))
+	// {
+	// 	UVcout << "Could not open gcg output file" << endl;
+	// 	return;
+	// }
 
-	QuackleIO::GCGIO io;
-	QTextStream out(&outFile);
-	io.write(game, out);
+	// QuackleIO::GCGIO io;
+	// QTextStream out(&outFile);
+	// io.write(game, out);
 
-	QFile outFileReport(QString("%1/%2-game-%3.report").arg(gamesDir).arg(joinedCompyName).arg(gameNumber));
+	// QFile outFileReport(QString("%1/%2-game-%3.report").arg(gamesDir).arg(joinedCompyName).arg(gameNumber));
 
-	if (!outFileReport.open(QIODevice::WriteOnly | QIODevice::Text))
-	{
-		UVcout << "Could not open report output file" << endl;
-		return;
-	}
-	QTextStream outReport(&outFileReport);
-	outReport << QuackleIO::Util::uvStringToQString(report);
-	outReport << "Game played in " << secondsElapsed << " seconds." << endl;
+	// if (!outFileReport.open(QIODevice::WriteOnly | QIODevice::Text))
+	// {
+	// 	UVcout << "Could not open report output file" << endl;
+	// 	return;
+	// }
+	// QTextStream outReport(&outFileReport);
+	// outReport << QuackleIO::Util::uvStringToQString(report);
+	// outReport << "Game played in " << secondsElapsed << " seconds." << endl;
 
-	outFile.close();
-	outFileReport.close();
+	// outFile.close();
+	// outFileReport.close();
 }
 
 static void dumpGaddag(const GaddagNode *node, const LetterString &prefix)

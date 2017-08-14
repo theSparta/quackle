@@ -115,6 +115,7 @@ protected:
 	QString m_lexicon;
 	QString m_alphabet;
 	vector<double> weights;
+	unsigned int weightsSize;
 };
 
 #endif
