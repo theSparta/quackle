@@ -36,13 +36,13 @@ if __name__=="__main__":
 
     #PARAMS
     popsize = 25
-    maxiter = 3 #6
+    maxiter = 1 #6
     itercounter = 0 # Number for new gen start
 
-    initweights = [1.0, 1.0, 0.0 , 0.0]
+    initweights = [ 1. , 0.03018293]
     # Feb 24: this achieves 45 percent winrate
-    es = CMAEvolutionStrategy(initweights, 0.5, {'popsize':popsize, 'maxiter':maxiter,
-        'bounds': [-1, np.inf], 'fixed_variables':{0:1.0, 1:1.0}})
+    es = CMAEvolutionStrategy(initweights, 0.1, {'popsize':popsize, 'maxiter':maxiter,
+        'bounds': [0, 1], 'fixed_variables':{0:1.0}})
     #ALTERNATIVELY, load
     #es = pickle.load(open('saved-cma-object_' + str(itercounter) + '.pkl', 'rb'))
 
@@ -64,9 +64,9 @@ if __name__=="__main__":
             es.result_pretty()
             sys.stdout.flush()
 
-            esfile =  DIR_NAME + 'scripts/cma_out/saved-fitness-cma-object_' + str(itercounter+1) + '.pkl'
-            pickle.dump(es, open(esfile, 'wb'))
-            print('Saved weights at end of generation ' + str(itercounter) + " in file " + esfile)
+            # esfile =  DIR_NAME + 'scripts/cma_out/saved-fitness-cma-object_' + str(itercounter+1) + '.pkl'
+            # pickle.dump(es, open(esfile, 'wb'))
+            # print('Saved weights at end of generation ' + str(itercounter) + " in file " + esfile)
 
             itercounter += 1
 

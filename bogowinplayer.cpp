@@ -125,8 +125,8 @@ MoveList SmartBogowin::moves(int nmoves)
         }
     }
 
-	UVcout << "SmartBogowin generating move from position:" << endl;
-	UVcout << currentPosition() << endl;
+	// UVcout << "SmartBogowin generating move from position:" << endl;
+	// UVcout << currentPosition() << endl;
 
 	const int zerothPrune = 33;
 	int plies = 2;

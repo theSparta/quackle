@@ -647,6 +647,7 @@ Quackle::Game *TestHarness::createNewGame(const QString &filename)
 
 void TestHarness::testPositions()
 {
+	// m_dataManager.seedRandomNumbers(42);
 	UVcout << "Testing " << m_positions.size() << " positions with " << m_computerPlayerToTest->name() << "." << endl;
 	for (QStringList::iterator it = m_positions.begin(); it != m_positions.end(); ++it)
 		testFromFile(*it);
@@ -695,16 +696,16 @@ void TestHarness::selfPlayGame(unsigned int gameNumber, bool reports, bool playa
 	Quackle::Player compyA(m_computerPlayerToTest->name() + MARK_UV(" A"), Quackle::Player::ComputerPlayerType, 0);
 	compyA.setAbbreviatedName(MARK_UV("A"));
 	compyA.setComputerPlayer(m_computerPlayerToTest);
-	Evaluator *compyAEvaluator = new NewCatchallEvaluator({1, 0}, 2);
+	// Evaluator *compyAEvaluator = new NewCatchallEvaluator({1, 0}, 2);
 	// *compyAEvaluator = *QUACKLE_EVALUATOR;
-	compyA.setEvaluator(compyAEvaluator);
+	// compyA.setEvaluator(compyAEvaluator);
 	players.push_back(compyA);
 
 	Quackle::Player compyB(m_computerPlayer2ToTest->name() + MARK_UV(" B"), Quackle::Player::ComputerPlayerType, 1);
 	compyB.setAbbreviatedName(MARK_UV("B"));
 	compyB.setComputerPlayer(m_computerPlayer2ToTest);
-	Evaluator* compyBEvaluator = new NewCatchallEvaluator(weights, weightsSize);
-	compyB.setEvaluator(compyBEvaluator);
+	// Evaluator* compyBEvaluator = new NewCatchallEvaluator(weights, weightsSize);
+	// compyB.setEvaluator(compyBEvaluator);
 	players.push_back(compyB);
 
 	game.setPlayers(players);
@@ -783,40 +784,40 @@ void TestHarness::selfPlayGame(unsigned int gameNumber, bool reports, bool playa
 	Quackle::StaticPlayer playah;
 	UVString report;
 	Quackle::Reporter::reportGame(game, &playah, &report);
-	if (!m_quiet) { UVcout << report << endl; }
+	if (!m_quiet && m_verbose) { UVcout << report << endl; }
 
-	// QString gamesDir = m_gamesDir;
-	// gamesDir.replace("PLAYERNAME", QuackleIO::Util::uvStringToQString(m_computerPlayerToTest->name()));
-	// gamesDir.replace(" ", "_");
-	// QDir::current().mkdir(gamesDir);
+	QString gamesDir = m_gamesDir;
+	gamesDir.replace("PLAYERNAME", QuackleIO::Util::uvStringToQString(m_computerPlayerToTest->name()));
+	gamesDir.replace(" ", "_");
+	QDir::current().mkdir(gamesDir);
 
-	// QString joinedCompyName = QuackleIO::Util::uvStringToQString(m_computerPlayer2ToTest->name());
-	// joinedCompyName.replace(" ", "_");
-	// QFile outFile(QString("%1/%2-game-%3.gcg").arg(gamesDir).arg(joinedCompyName).arg(gameNumber));
+	QString joinedCompyName = QuackleIO::Util::uvStringToQString(m_computerPlayer2ToTest->name());
+	joinedCompyName.replace(" ", "_");
+	QFile outFile(QString("%1/%2-game-%3.gcg").arg(gamesDir).arg(joinedCompyName).arg(gameNumber));
 
-	// if (!outFile.open(QIODevice::WriteOnly | QIODevice::Text))
-	// {
-	// 	UVcout << "Could not open gcg output file" << endl;
-	// 	return;
-	// }
+	if (!outFile.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		UVcout << "Could not open gcg output file" << endl;
+		return;
+	}
 
-	// QuackleIO::GCGIO io;
-	// QTextStream out(&outFile);
-	// io.write(game, out);
+	QuackleIO::GCGIO io;
+	QTextStream out(&outFile);
+	io.write(game, out);
 
-	// QFile outFileReport(QString("%1/%2-game-%3.report").arg(gamesDir).arg(joinedCompyName).arg(gameNumber));
+	QFile outFileReport(QString("%1/%2-game-%3.report").arg(gamesDir).arg(joinedCompyName).arg(gameNumber));
 
-	// if (!outFileReport.open(QIODevice::WriteOnly | QIODevice::Text))
-	// {
-	// 	UVcout << "Could not open report output file" << endl;
-	// 	return;
-	// }
-	// QTextStream outReport(&outFileReport);
-	// outReport << QuackleIO::Util::uvStringToQString(report);
-	// outReport << "Game played in " << secondsElapsed << " seconds." << endl;
+	if (!outFileReport.open(QIODevice::WriteOnly | QIODevice::Text))
+	{
+		UVcout << "Could not open report output file" << endl;
+		return;
+	}
+	QTextStream outReport(&outFileReport);
+	outReport << QuackleIO::Util::uvStringToQString(report);
+	outReport << "Game played in " << secondsElapsed << " seconds." << endl;
 
-	// outFile.close();
-	// outFileReport.close();
+	outFile.close();
+	outFileReport.close();
 }
 
 static void dumpGaddag(const GaddagNode *node, const LetterString &prefix)
