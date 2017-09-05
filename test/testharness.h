@@ -61,6 +61,8 @@ public:
 	// and cleans up the game.
 	void testFromFile(const QString &file);
 
+	void testFromFile2(const QString &file, Quackle::Player *player);
+
 	// Load racks from a file racks and spit out their static leave values
 	void staticLeaves(const QString &file);
 

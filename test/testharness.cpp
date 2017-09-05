@@ -182,8 +182,6 @@ void TestHarness::executeFromArguments()
 
 	startUp();
 
-	UVcout << Bag::probabilityOfDrawingFromFullBag("AA") << endl;
-
 	if (mode == "positions")
 		testPositions();
 	else if (mode == "report")
@@ -246,11 +244,13 @@ void TestHarness::startUp()
 
 void TestHarness::testFromFile(const QString &file)
 {
-	UVcout << "Testing game from " << QuackleIO::Util::qstringToString(file) << endl;
+	UVcout << "$Testing game from " << QuackleIO::Util::qstringToString(file) << endl;
 	Quackle::Game *game = createNewGame(file);
 	if (game)
 	{
-		testPosition(game->currentPosition(), computerPlayerToTest());
+		Quackle::GamePosition currPosition = game->currentPosition();
+		currPosition.currentPlayer().setEvaluator(new NewCatchallEvaluator(weights, weightsSize));
+		testPosition(currPosition, computerPlayerToTest());
 	}
 
 	delete game;
@@ -601,16 +601,20 @@ void TestHarness::testPosition(const Quackle::GamePosition &position, Quackle::C
 	}
 
 	const int movesToShow = 10;
-	UVcout << "Testing " << computerPlayerToTest()->name() << " on:" << endl;
-	UVcout << position << endl;
-	UVcout << "Generating moves..." << endl;
+	if(m_verbose)
+	{
+		UVcout << "Testing " << player->name() << " on:" << endl;
+		UVcout << position << endl;
+	}
+	// UVcout << "$Generating moves..." << endl;
 
-	MoveList moves = computerPlayerToTest()->moves(movesToShow);
+	MoveList moves = player->moves(movesToShow);
 
 	for (Quackle::MoveList::const_iterator it = moves.begin(); it != moves.end(); ++it)
 	{
 		UVcout << *it << endl;
 	}
+	UVcout << "#" << " Done" << endl;
 }
 
 void TestHarness::anagram(const QString &letters, bool build)
@@ -647,7 +651,6 @@ Quackle::Game *TestHarness::createNewGame(const QString &filename)
 
 void TestHarness::testPositions()
 {
-	// m_dataManager.seedRandomNumbers(42);
 	UVcout << "Testing " << m_positions.size() << " positions with " << m_computerPlayerToTest->name() << "." << endl;
 	for (QStringList::iterator it = m_positions.begin(); it != m_positions.end(); ++it)
 		testFromFile(*it);
