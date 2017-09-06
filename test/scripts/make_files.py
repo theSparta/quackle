@@ -3,7 +3,7 @@ import os
 import glob
 import cPickle as pickle
 
-CURR_DIR = '/home/rishabh/Quackle/quackle/test'
+CURR_DIR = '/home/rishabh/quackle/test'
 START_LINES = 3
 EXTENSION = '.gcg'
 

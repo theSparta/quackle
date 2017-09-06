@@ -455,7 +455,7 @@ protected:
 
 inline Evaluator *GamePosition::currentEvaluator() const
 {
-	cout << currentPlayer().name() << endl;
+	// cout << currentPlayer().name() << endl;
 	return currentPlayer().getEvaluator();
 }
 

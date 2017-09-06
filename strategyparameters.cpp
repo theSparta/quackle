@@ -39,8 +39,7 @@ void StrategyParameters::initialize(const string &lexicon)
 	bool hasBogowin = loadBogowin(DataManager::self()->findDataFile("strategy", lexicon, "bogowin"));
 	bool hasSuperleaves = loadSuperleaves(DataManager::self()->findDataFile("strategy", lexicon, "superleaves"));
 	bool hasSynergies = loadSynergies(DataManager::self()->findDataFile("strategy", lexicon, "synergies"));
-	m_initialized = hasSyn2 && hasWorths && hasVcPlace && hasBogowin && hasSuperleaves;
-	// && hasSynergies;
+	m_initialized = hasSyn2 && hasWorths && hasVcPlace && hasBogowin && hasSuperleaves && hasSynergies;
 }
 
 bool StrategyParameters::loadSyn2(const string &filename)
@@ -250,7 +249,7 @@ bool StrategyParameters::loadSynergies(const string & filename){
 	ifstream file(filename);
 	if (!file.is_open())
 	{
-		cerr << "Could not open " << filename << " to load superleave heuristic" << endl;
+		cerr << "Could not open " << filename << " to load synergies heuristic" << endl;
 		return false;
 	}
 	string leave;

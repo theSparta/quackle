@@ -9,7 +9,7 @@ import multiprocessing
 
 # for reproducibility
 RANDOM_SEED = 42
-DIR_NAME="/home/ubuntu/quackle/test"
+DIR_NAME="/home/rishabh/quackle/test"
 np.random.seed(RANDOM_SEED)
 
 def parsemove(line):

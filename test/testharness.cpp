@@ -699,16 +699,17 @@ void TestHarness::selfPlayGame(unsigned int gameNumber, bool reports, bool playa
 	Quackle::Player compyA(m_computerPlayerToTest->name() + MARK_UV(" A"), Quackle::Player::ComputerPlayerType, 0);
 	compyA.setAbbreviatedName(MARK_UV("A"));
 	compyA.setComputerPlayer(m_computerPlayerToTest);
-	// Evaluator *compyAEvaluator = new NewCatchallEvaluator({1, 0}, 2);
-	// *compyAEvaluator = *QUACKLE_EVALUATOR;
-	// compyA.setEvaluator(compyAEvaluator);
+	Evaluator compyAEvaluator= *QUACKLE_EVALUATOR;
+	compyA.setEvaluator(&compyAEvaluator);
 	players.push_back(compyA);
 
 	Quackle::Player compyB(m_computerPlayer2ToTest->name() + MARK_UV(" B"), Quackle::Player::ComputerPlayerType, 1);
 	compyB.setAbbreviatedName(MARK_UV("B"));
 	compyB.setComputerPlayer(m_computerPlayer2ToTest);
-	// Evaluator* compyBEvaluator = new NewCatchallEvaluator(weights, weightsSize);
-	// compyB.setEvaluator(compyBEvaluator);
+	// Evaluator compyBEvaluator= *QUACKLE_EVALUATOR;
+	// compyA.setEvaluator(&compyBEvaluator);
+	Evaluator* compyBEvaluator = new NewCatchallEvaluator(weights, weightsSize);
+	compyB.setEvaluator(compyBEvaluator);
 	players.push_back(compyB);
 
 	game.setPlayers(players);
@@ -727,7 +728,7 @@ void TestHarness::selfPlayGame(unsigned int gameNumber, bool reports, bool playa
 	{
 		if (game.currentPosition().gameOver())
 		{
-			if (!m_quiet) {
+			// if (!m_quiet) {
 				UVcout << "GAME OVER ";
 				GamePosition &pos = game.currentPosition();
 				const PlayerList players = pos.endgameAdjustedScores();
@@ -735,8 +736,8 @@ void TestHarness::selfPlayGame(unsigned int gameNumber, bool reports, bool playa
 					it != players.end(); ++it) {
 					UVcout << it->name() << " : " << it->score() << " ";
 				}
-				UVcout << endl;
-			}
+				// UVcout << endl;
+			// }
 			break;
 		}
 

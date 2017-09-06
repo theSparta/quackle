@@ -127,9 +127,9 @@ UVOStream &operator<<(UVOStream &o, const Quackle::Player &player)
 
 void Player::setEvaluator(Evaluator* evaluator)
 {
-	if(!(m_evaluator == QUACKLE_EVALUATOR)){
-		delete m_evaluator;
-	}
+	// if(!(m_evaluator == QUACKLE_EVALUATOR)){
+	// 	delete m_evaluator;
+	// }
 	m_evaluator = evaluator;
 }
 

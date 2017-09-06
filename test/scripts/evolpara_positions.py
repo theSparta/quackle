@@ -9,7 +9,7 @@ import subprocess
 from cma import CMAEvolutionStrategy
 from cma.utilities.utils import pprint
 
-DIR_NAME = "/home/ubuntu/quackle/test"
+DIR_NAME = "/home/rishabh/quackle/test"
 #MULTIPLIER = 1e5
 #GAMESPERAGENT = 50000
 
