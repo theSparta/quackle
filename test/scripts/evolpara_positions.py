@@ -9,7 +9,7 @@ import subprocess
 from cma import CMAEvolutionStrategy
 from cma.utilities.utils import pprint
 
-DIR_NAME = "/home/rishabh/Quackle/quackle/test"
+DIR_NAME = "/home/ubuntu/quackle/test"
 #MULTIPLIER = 1e5
 #GAMESPERAGENT = 50000
 
@@ -42,8 +42,8 @@ if __name__=="__main__":
     moves_file = os.path.join(DIR_NAME, 'scripts/moves_games.pickle')
     ideal_moves = pickle.load(open(moves_file, 'rb'))
     #PARAMS
-    popsize = 25
-    maxiter = 3 #6
+    popsize = 30
+    maxiter = 4 #6
     itercounter = 0 # Number for new gen start
 
     initweights = [ 1. , 0.95]

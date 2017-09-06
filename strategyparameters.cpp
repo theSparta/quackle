@@ -39,7 +39,8 @@ void StrategyParameters::initialize(const string &lexicon)
 	bool hasBogowin = loadBogowin(DataManager::self()->findDataFile("strategy", lexicon, "bogowin"));
 	bool hasSuperleaves = loadSuperleaves(DataManager::self()->findDataFile("strategy", lexicon, "superleaves"));
 	bool hasSynergies = loadSynergies(DataManager::self()->findDataFile("strategy", lexicon, "synergies"));
-	m_initialized = hasSyn2 && hasWorths && hasVcPlace && hasBogowin && hasSynergies && hasSuperleaves;
+	m_initialized = hasSyn2 && hasWorths && hasVcPlace && hasBogowin && hasSuperleaves;
+	// && hasSynergies;
 }
 
 bool StrategyParameters::loadSyn2(const string &filename)

@@ -9,11 +9,11 @@ import multiprocessing
 
 # for reproducibility
 RANDOM_SEED = 42
-DIR_NAME="/home/rishabh/Quackle/quackle/test"
+DIR_NAME="/home/ubuntu/quackle/test"
 np.random.seed(RANDOM_SEED)
 
 def parsemove(line):
-    return line.split(' ')[:2]
+    return (line.split())[:2]
 
 def merge_dicts(dict_args):
     """
@@ -32,29 +32,30 @@ def chunks(l, n):
 
 def getMoves(command):
     cmd_args = shlex.split(command)
-    p1 = subprocess.Popen(cmd_args, cwd=DIR_NAME,stdout=subprocess.PIPE)
-
+    p1 = subprocess.Popen(cmd_args, cwd=DIR_NAME,stdout=subprocess.PIPE, stderr=DEV_NULL)
     moves = {}
     counter = -1
 
     for line in p1.stdout:
+	line = line.strip()
         startChar = line[0]
         if startChar == '#':
             counter = -1
         elif startChar == '$':
             counter = 0
-            key = (line.strip()).split(" ")[-1][skip_len:]
+            key = line.split(" ")[-1][skip_len:]
             moves[key] = []
 
-        if counter >= 0 and counter <= 1 :
+        if counter == 0 or counter == 1 :
             counter += 1
-        elif counter > 1:
+        elif counter == 2:
             moves[key].append(parsemove(line))
 
     return moves
 
 if __name__ == '__main__':
 
+    DEV_NULL = open('/dev/null', 'w')
     parser = argparse.ArgumentParser()
     parser.add_argument("-o","--outfile", default="Speedy_Moves.pickle")
     parser.add_argument("-p", "--player", default="Speedy Player")
@@ -66,8 +67,9 @@ if __name__ == '__main__':
     parser.add_argument("--save", action="store_true", help="to save the moves to outfile")
     args = parser.parse_args()
     use_parallel = args.parallel
+    num_parallel = 16
     if use_parallel:
-        seeds = [str(i) for i in np.random.randint(1000, size=4)]
+        seeds = [str(i) for i in np.random.randint(1000, size=num_parallel)]
         seed_arg = "{1}"
     else:
         seed_arg = str(RANDOM_SEED)
@@ -86,18 +88,18 @@ if __name__ == '__main__':
 
     dirname = os.path.join(DIR_NAME, args.directory)
     skip_len = len(args.directory) + 1
-    files =  sorted(os.listdir(dirname))[:40000]
+    files =  sorted(os.listdir(dirname))
     strs = [ "--position {}".format(os.path.join(args.directory, file))
 	       for file in files]
 
     if use_parallel:
-        pool = multiprocessing.Pool(4)
+        pool = multiprocessing.Pool(num_parallel)
         commands = [command + " --seed=42 " +  " ".join(strlist)
-                for strlist in chunks(strs, (len(strs)//4) + 1)]
+                for strlist in chunks(strs, (len(strs)//num_parallel) + 1)]
         dicts = pool.map(getMoves,  commands)
         moves = merge_dicts(dicts)
     else:
-        command = command + " ".join(strs)
+        command = command + " ".join(strs) 
         moves = getMoves(command)
 
     if verbose:
@@ -110,3 +112,4 @@ if __name__ == '__main__':
     	outfile = os.path.join(DIR_NAME, args.outfile)
     	print("Saving to file %s" %(outfile,))
     	pickle.dump(moves, open(outfile, 'wb'))
+    DEV_NULL.close()
