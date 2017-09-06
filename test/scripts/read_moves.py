@@ -56,12 +56,13 @@ def getMoves(command):
 if __name__ == '__main__':
 
     DEV_NULL = open('/dev/null', 'w')
+    num_weights = 5
     parser = argparse.ArgumentParser()
     parser.add_argument("-o","--outfile", default="Speedy_Moves.pickle")
     parser.add_argument("-p", "--player", default="Speedy Player")
     parser.add_argument("-e", "--executable", default="./test")
     parser.add_argument("-d", "--directory", default = "gcg")
-    parser.add_argument("-w", "--weights", nargs=2, required=True)
+    parser.add_argument("-w", "--weights", nargs=num_weights, required=True)
     parser.add_argument("--verbose", action="store_true", help="print output to terminal")
     parser.add_argument("--parallel", action="store_true",help="whether to use gnu parallel or not")
     parser.add_argument("--save", action="store_true", help="to save the moves to outfile")
@@ -83,12 +84,12 @@ if __name__ == '__main__':
         outfile = args.outfile
 
     command = "./test --mode=positions --lexicon=csw12 --computer=" + \
-            player  + " --weights \"|" + \
-            "|".join(args.weights) + '" '
+            player  + " -z {}".format(num_weights) + " --weights \"|" + \
+            "|".join(args.weights) + '" ' 
 
     dirname = os.path.join(DIR_NAME, args.directory)
     skip_len = len(args.directory) + 1
-    files =  sorted(os.listdir(dirname))
+    files =  sorted(os.listdir(dirname))[:40000]
     strs = [ "--position {}".format(os.path.join(args.directory, file))
 	       for file in files]
 
