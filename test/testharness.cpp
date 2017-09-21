@@ -699,8 +699,7 @@ void TestHarness::selfPlayGame(unsigned int gameNumber, bool reports, bool playa
 	Quackle::Player compyA(m_computerPlayerToTest->name() + MARK_UV(" A"), Quackle::Player::ComputerPlayerType, 0);
 	compyA.setAbbreviatedName(MARK_UV("A"));
 	compyA.setComputerPlayer(m_computerPlayerToTest);
-	Evaluator compyAEvaluator= *QUACKLE_EVALUATOR;
-	compyA.setEvaluator(&compyAEvaluator);
+	compyA.setEvaluator(QUACKLE_EVALUATOR);
 	players.push_back(compyA);
 
 	Quackle::Player compyB(m_computerPlayer2ToTest->name() + MARK_UV(" B"), Quackle::Player::ComputerPlayerType, 1);
@@ -736,7 +735,7 @@ void TestHarness::selfPlayGame(unsigned int gameNumber, bool reports, bool playa
 					it != players.end(); ++it) {
 					UVcout << it->name() << " : " << it->score() << " ";
 				}
-				// UVcout << endl;
+				UVcout << endl;
 			// }
 			break;
 		}
