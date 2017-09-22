@@ -174,7 +174,6 @@ void TestHarness::executeFromArguments()
 	else{
 		// this can be modified dependent upon the number of features used
 		weights = vector<double> (weightsSize, 1.0);
-		weights[1] = 0.05; //{1.0, 1.0, 0, 0};
 	}
 
 	m_computerPlayerToTest = checkPlayerName(computer);
@@ -705,8 +704,6 @@ void TestHarness::selfPlayGame(unsigned int gameNumber, bool reports, bool playa
 	Quackle::Player compyB(m_computerPlayer2ToTest->name() + MARK_UV(" B"), Quackle::Player::ComputerPlayerType, 1);
 	compyB.setAbbreviatedName(MARK_UV("B"));
 	compyB.setComputerPlayer(m_computerPlayer2ToTest);
-	// Evaluator compyBEvaluator= *QUACKLE_EVALUATOR;
-	// compyA.setEvaluator(&compyBEvaluator);
 	Evaluator* compyBEvaluator = new NewCatchallEvaluator(weights, weightsSize);
 	compyB.setEvaluator(compyBEvaluator);
 	players.push_back(compyB);
