@@ -1,4 +1,6 @@
 from __future__ import print_function
+import matplotlib; matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 import numpy as np
 from joblib import Parallel, delayed
 import sys
@@ -6,17 +8,18 @@ import pickle
 import shlex
 import subprocess
 import cma
+import os
+
 from cma import CMAEvolutionStrategy
 from cma.utilities.utils import pprint
 
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 
-DIR_NAME = "/home/ubuntu/quackle/test/"
+from multiprocessing import cpu_count
+
+DIR_NAME = os.path.dirname(os.getcwd()) + "/"
 MULTIPLIER = 1e5
-GAMESPERAGENT = 1500
-AGENTS = 32
+AGENTS = cpu_count()
+GAMESPERAGENT = 50000//AGENTS
 
 def fitness_val(filename):
     scores = np.genfromtxt(filename, delimiter=',')
@@ -29,7 +32,7 @@ def fitness_val(filename):
 
 def fitnessfunc(weights, counter):
     ws = map(str, weights)
-    out_name = DIR_NAME + 'out/out_w_' + "_".join(ws) + '_' + 'Speedy Player'
+    out_name = DIR_NAME + 'out/out_w_' + "_".join(ws) + '_Speedy Player_Speedy Player' 
     cmd = "python gen_output.py --parallel -n {} -i {} --weights {}".format(
             str(GAMESPERAGENT * AGENTS), str(GAMESPERAGENT), " ".join(ws))
     p = subprocess.call(shlex.split(cmd), cwd=DIR_NAME + 'scripts')
@@ -44,8 +47,7 @@ if __name__=="__main__":
     maxiter = 4
     itercounter = 0 # Number for new gen start
 
-    initweights = [1.0, 1.0018817522434955, -0.0065727452127086541,
-            -0.024918932669268121, -0.0047547588924535984] #[ 1., 1, 0, 0, 0]
+    initweights = [1.0, 1.0, 0 , 0 , 0 , 0 , 0 , 0 ]
     # Feb 24: this achieves 45 percent winrate
     es = CMAEvolutionStrategy(initweights, 0.1, {'popsize':popsize, 'maxiter':maxiter,
     'fixed_variables':{0:1.0}}) # 'bounds': [0, 1]
