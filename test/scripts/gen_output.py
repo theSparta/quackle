@@ -4,12 +4,14 @@ import numpy as np
 import shlex
 import sys
 import os
+import multiprocessing
 
 # for reproducibility
 RANDOM_SEED = 42
 DIR_NAME="/home/rishabh/quackle/test"
 np.random.seed(RANDOM_SEED)
-num_w = 5
+num_proc = multiprocessing.cpu_count()
+num_w = 8
 
 if __name__ == '__main__':
 
