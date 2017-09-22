@@ -5,12 +5,18 @@ import sys
 import pickle
 import shlex
 import subprocess
+import cma
 from cma import CMAEvolutionStrategy
 from cma.utilities.utils import pprint
 
-DIR_NAME = "/home/rishabh/Quackle/quackle/test/"
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+
+DIR_NAME = "/home/ubuntu/quackle/test/"
 MULTIPLIER = 1e5
-GAMESPERAGENT = 50000
+GAMESPERAGENT = 1500
+AGENTS = 32
 
 def fitness_val(filename):
     scores = np.genfromtxt(filename, delimiter=',')
@@ -24,55 +30,56 @@ def fitness_val(filename):
 def fitnessfunc(weights, counter):
     ws = map(str, weights)
     out_name = DIR_NAME + 'out/out_w_' + "_".join(ws) + '_' + 'Speedy Player'
-    cmd = "python gen_output.py -n " + str(GAMESPERAGENT) + \
-        " --weights " + " ".join(ws)
+    cmd = "python gen_output.py --parallel -n {} -i {} --weights {}".format(
+            str(GAMESPERAGENT * AGENTS), str(GAMESPERAGENT), " ".join(ws))
     p = subprocess.call(shlex.split(cmd), cwd=DIR_NAME + 'scripts')
     fitness = fitness_val(out_name)
     print("Generation " + str(itercounter) + "_" + str(counter) + " weights = " + np.array_str(weights) + " Fitness = "+str(fitness))
-    sys.stdout.flush()
     return fitness
 
 if __name__=="__main__":
 
     #PARAMS
     popsize = 25
-    maxiter = 1 #6
+    maxiter = 4
     itercounter = 0 # Number for new gen start
 
-    initweights = [ 1. , 0.03018293]
+    initweights = [1.0, 1.0018817522434955, -0.0065727452127086541,
+            -0.024918932669268121, -0.0047547588924535984] #[ 1., 1, 0, 0, 0]
     # Feb 24: this achieves 45 percent winrate
     es = CMAEvolutionStrategy(initweights, 0.1, {'popsize':popsize, 'maxiter':maxiter,
-        'bounds': [0, 1], 'fixed_variables':{0:1.0}})
+    'fixed_variables':{0:1.0}}) # 'bounds': [0, 1]
     #ALTERNATIVELY, load
     #es = pickle.load(open('saved-cma-object_' + str(itercounter) + '.pkl', 'rb'))
 
-    with Parallel (n_jobs=4) as parallel:
-        while not es.stop():
-            print("Generation " + str(itercounter+1))
-            sys.stdout.flush()
-            solutions = es.ask()
-            fitnessvector = parallel( delayed (fitnessfunc)
-                    (weights, counter)
-                    for (weights, counter) in
-                    zip (solutions, xrange(1, popsize+1)) )
-            # print(fitnessvector)
-            es.tell(solutions, fitnessvector)
-            es.disp()  # uses option verb_disp with default 100
-            sys.stdout.flush()
+    #with Parallel (n_jobs=4) as parallel:
+    logger = cma.CMADataLogger().register(es)
+    while not es.stop():
+        print("Generation " + str(itercounter+1))
+        solutions = es.ask()
+        fitnessvector =  [fitnessfunc(weights, counter) #parallel( delayed (
+                for (weights, counter) in
+                zip (solutions, xrange(1, popsize+1)) ]
+        # print(fitnessvector)
+        es.tell(solutions, fitnessvector)
+        es.disp()  # uses option verb_disp with default 100
 
-            print("Hello SUCKER!")
-            es.result_pretty()
-            sys.stdout.flush()
+        print("Hello SUCKER!")
+        es.result_pretty()
 
-            # esfile =  DIR_NAME + 'scripts/cma_out/saved-fitness-cma-object_' + str(itercounter+1) + '.pkl'
-            # pickle.dump(es, open(esfile, 'wb'))
-            # print('Saved weights at end of generation ' + str(itercounter) + " in file " + esfile)
+        # esfile =  DIR_NAME + 'scripts/cma_out/saved-fitness-cma-object_' + str(itercounter+1) + '.pkl'
+        # pickle.dump(es, open(esfile, 'wb'))
+        # print('Saved weights at end of generation ' + str(itercounter) + " in file " + esfile)
 
-            itercounter += 1
+        itercounter += 1
+        logger.add()
 
-        pprint(es.best.__dict__)
-        sys.stdout.flush()
+    pprint(es.best.__dict__)
 
-        #es.logger.add()  # write data to disc to be plotted
-        #es.disp()
+    logger.plot()
+    plt.savefig('cma_results_games')
+    logger.figclose()
+
+    #es.logger.add()  # write data to disc to be plotted
+    #es.disp()
 
