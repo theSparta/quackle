@@ -68,6 +68,7 @@ public:
 	// Move score
 	ModifiedEvaluator(vector<double> weights, const unsigned int & size)
 	{
+		// cout << size << " " << weights.size() << endl;
 		assert(weights.size() == size); // assuming for two features currently
 		coeffs = weights;
 	}
