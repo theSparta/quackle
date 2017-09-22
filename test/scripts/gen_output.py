@@ -8,7 +8,7 @@ import multiprocessing
 
 # for reproducibility
 RANDOM_SEED = 42
-DIR_NAME="/home/rishabh/quackle/test"
+DIR_NAME="/home/ubuntu/quackle/test"
 np.random.seed(RANDOM_SEED)
 num_proc = multiprocessing.cpu_count()
 num_w = 8

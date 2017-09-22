@@ -9,7 +9,7 @@ import multiprocessing
 
 # for reproducibility
 RANDOM_SEED = 42
-DIR_NAME="/home/rishabh/quackle/test"
+DIR_NAME="/home/ubuntu/quackle/test"
 np.random.seed(RANDOM_SEED)
 
 def parsemove(line):
@@ -58,7 +58,7 @@ if __name__ == '__main__':
     DEV_NULL = open('/dev/null', 'w')
     num_weights = 5
     parser = argparse.ArgumentParser()
-    parser.add_argument("-o","--outfile", default="Speedy_Moves.pickle")
+    parser.add_argument("-o","--outfile", default=None)
     parser.add_argument("-p", "--player", default="Speedy Player")
     parser.add_argument("-e", "--executable", default="./test")
     parser.add_argument("-d", "--directory", default = "gcg")
@@ -66,9 +66,10 @@ if __name__ == '__main__':
     parser.add_argument("--verbose", action="store_true", help="print output to terminal")
     parser.add_argument("--parallel", action="store_true",help="whether to use gnu parallel or not")
     parser.add_argument("--save", action="store_true", help="to save the moves to outfile")
+    parser.add_argument("-n", "--num", default=-1)
     args = parser.parse_args()
     use_parallel = args.parallel
-    num_parallel = 16
+    num_parallel = 32
     if use_parallel:
         seeds = [str(i) for i in np.random.randint(1000, size=num_parallel)]
         seed_arg = "{1}"
@@ -79,7 +80,7 @@ if __name__ == '__main__':
     verbose = args.verbose
 
     if args.outfile is None:
-        outfile = DIR_NAME + "moves"
+        outfile = "moves/out_w_{}".format( "_".join(args.weights))
     else:
         outfile = args.outfile
 
@@ -89,7 +90,7 @@ if __name__ == '__main__':
 
     dirname = os.path.join(DIR_NAME, args.directory)
     skip_len = len(args.directory) + 1
-    files =  sorted(os.listdir(dirname))[:40000]
+    files =  sorted(os.listdir(dirname))[:int(args.num)]
     strs = [ "--position {}".format(os.path.join(args.directory, file))
 	       for file in files]
 
@@ -110,7 +111,7 @@ if __name__ == '__main__':
     	    for k in moves[key][:2]:
     	    	print(k)
     if args.save:
-    	outfile = os.path.join(DIR_NAME, args.outfile)
-    	print("Saving to file %s" %(outfile,))
+    	outfile = os.path.join(DIR_NAME, outfile)
+#    	print("Saving to file %s" %(outfile,))
     	pickle.dump(moves, open(outfile, 'wb'))
     DEV_NULL.close()
