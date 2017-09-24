@@ -18,7 +18,7 @@ if __name__ == '__main__':
     for indx in range(len(sys.argv) - 1): 
         if '--weights' == sys.argv[indx] or '-w' == sys.argv[indx]:
             for i in range(1, num_w+1):
-                sys.argv[indx + i] = ' {0}'.format(sys.argv[indx + i])
+                sys.argv[indx + i] = ' {}'.format(sys.argv[indx + i])
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-o","--outfile")
@@ -44,7 +44,7 @@ if __name__ == '__main__':
         seed_arg = str(RANDOM_SEED)
         num_iterations = total_iterations
     exec_file = args.executable
-    fn_weights = args.weights
+    fn_weights = [i.strip() for i in args.weights]
     player1 = '"' + args.player1 + '"'
     player2 = '"' + args.player2 + '"'
     verbose = args.verbose
