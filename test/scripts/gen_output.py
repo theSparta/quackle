@@ -15,6 +15,11 @@ num_w = 8
 
 if __name__ == '__main__':
 
+    for indx in range(len(sys.argv) - 1): 
+        if '--weights' == sys.argv[indx] or '-w' == sys.argv[indx]:
+            for i in range(1, num_w+1):
+                sys.argv[indx + i] = ' {0}'.format(sys.argv[indx + i])
+
     parser = argparse.ArgumentParser()
     parser.add_argument("-o","--outfile")
     parser.add_argument("-i", "--num_iterations", type=int, default=50)

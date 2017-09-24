@@ -18,7 +18,7 @@ gp_params = {"alpha": 1e-5, "n_restarts_optimizer": 2}
 DIR_NAME = os.path.dirname(os.getcwd()) + "/"
 MULTIPLIER = 1e5
 AGENTS = cpu_count()
-GAMESPERAGENT = 50000//AGENTS
+GAMESPERAGENT = 500//AGENTS
 
 def fitness_val(filename):
     scores = np.genfromtxt(filename, delimiter=',')
@@ -60,7 +60,8 @@ if __name__ == '__main__':
     # list of corresponding values
     bo.initialize(
         {
-            'target': [2183937449.0, 2156350512.0, 2086549502.0],
+            'target' : [21800000, 21500000, 20800000],
+            #'target': [2183937449.0, 2156350512.0, 2086549502.0],
             'w1': [1, 1, 1],
             'w2': [1, 1, 1],
             'w3': [0, 0.01, 0.02],
