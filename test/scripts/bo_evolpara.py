@@ -16,9 +16,9 @@ gp_params = {"alpha": 1e-5, "n_restarts_optimizer": 2}
 
 
 DIR_NAME = os.path.dirname(os.getcwd()) + "/"
-MULTIPLIER = 1e5
+MULTIPLIER = 1e4
 AGENTS = cpu_count()
-GAMESPERAGENT = 50000//AGENTS
+GAMESPERAGENT = 5000//AGENTS
 
 def fitness_val(filename):
     scores = np.genfromtxt(filename, delimiter=',')
@@ -44,39 +44,41 @@ def target(w1, w2, w3, w4, w5, w6, w7, w8):
 if __name__ == '__main__':
 
     bo = BayesianOptimization(target,
-                              {'w1': (1, 1), 'w2': (0.9, 1.1), 'w3':(-0.1, 0.1), 'w4':(-1, 1),
-                              'w5': (-1, 1),'w6': (-1, 1), 'w7': (-1, 1), 'w8':(-1, 1)})
+                              {'w1': (1, 1), 'w2': (0.9, 1.1), 'w3':(0, 0.1), 'w4':(-1, 1),
+                              'w5': (-1, 1),'w6': (-1, 1), 'w7': (-.5, 1),
+                              'w8':(-.5, 1)})
 
     # One of the things we can do with this object is pass points
     # which we want the algorithm to probe. A dictionary with the
     # parameters names and a list of values to include in the search
     # must be given.
-    bo.explore({'w1': [1, 1, 1], 'w2': [1, 1, 1], 'w3': [0, 0.01, 0.02], 'w4':[0, 0, 0], 'w5':[0, 0, 0], 'w6':[0, 0, 0], 'w7':[0, 0, 0], 'w8':[0, 0, 0] })
+    bo.explore({'w1': [1, 1, 1], 'w2': [1, 1, 1], 'w3': [0, 0.001, 0.002], 'w4':[0, 0, 0], 'w5':[0, 0, 0], 'w6':[0, 0, 0], 'w7':[0, 0, 0], 'w8':[0, 0, 0] })
 
     # Additionally, if we have any prior knowledge of the behaviour of
     # the target function (even if not totally accurate) we can also
     # tell that to the optimizer.
     # Here we pass a dictionary with 'target' and parameter names as keys and a
     # list of corresponding values
-    bo.initialize(
-        {
-            #'target' : [21800000, 21500000, 20800000],
-            'target': [2183937449.0, 2156350512.0, 2086549502.0],
-            'w1': [1, 1, 1],
-            'w2': [1, 1, 1],
-            'w3': [0, 0.01, 0.02],
-            'w4':[0, 0, 0],
-            'w5':[0, 0, 0],
-            'w6':[0, 0, 0],
-            'w7':[0, 0, 0],
-            'w8':[0, 0, 0]
-        }
-    )
+    # bo.initialize(
+    #     {
+    #         #'target' : [21800000, 21500000, 20800000],
+    #         'target': [2183937449.0, 2156350512.0, 2086549502.0],
+    #         'w1': [1, 1, 1],
+    #         'w2': [1, 1, 1],
+    #         'w3': [0, 0.01, 0.02],
+    #         'w4':[0, 0, 0],
+    #         'w5':[0, 0, 0],
+    #         'w6':[0, 0, 0],
+    #         'w7':[0, 0, 0],
+    #         'w8':[0, 0, 0]
+    #     }
+    # )
+
 
     # Once we are satisfied with the initialization conditions
     # we let the algorithm do its magic by calling the maximize()
     # method.
-    bo.maximize(init_points=5, n_iter=100, kappa=3, acq="ucb", **gp_params)
+    bo.maximize(init_points=5, n_iter=200, kappa=3, acq="ucb", **gp_params)
 
     # The output values can be accessed with self.res
     # print(bo.res['max'])
@@ -88,11 +90,11 @@ if __name__ == '__main__':
 
     # # Making changes to the gaussian process can impact the algorithm
     # # dramatically.
-    # gp_params = {'kernel': None,
-    #              'alpha': 1e-5}
+    gp_params = {'kernel': None,
+                  'alpha': 1e-5}
 
     # # Run it again with different acquisition function
-    # bo.maximize(n_iter=5, acq='ei', **gp_params)
+    bo.maximize(n_iter=25, acq='ei', xi=0.01,  **gp_params)
 
     # # Finally, we take a look at the final results.
     print(bo.res['max'])

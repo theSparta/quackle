@@ -44,7 +44,7 @@ if __name__=="__main__":
 
     #PARAMS
     popsize = 25
-    maxiter = 4
+    maxiter = 6
     itercounter = 0 # Number for new gen start
 
     initweights = [1.0, 1.0, 0.01 , 0 , 0 , 0 , 0 , 0 ]

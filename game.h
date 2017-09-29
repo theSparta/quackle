@@ -29,6 +29,7 @@
 #include "board.h"
 #include "player.h"
 #include "playerlist.h"
+#include "datamanager.h"
 
 namespace Quackle
 {
@@ -455,8 +456,15 @@ protected:
 
 inline Evaluator *GamePosition::currentEvaluator() const
 {
-	// cout << currentPlayer().name() << endl;
-	return currentPlayer().getEvaluator();
+	// if(20 <= bag.size() <= 80)
+	//cout << currentPlayer().id() << endl;
+	//cout << currentPlayer().name() << endl;
+/*if (currentPlayer().id() == 1){
+		int sz = bag().size();
+		if (20 <= sz && sz <= 80)
+			return currentPlayer().getEvaluator();
+	}
+*/	return currentPlayer().getEvaluator();
 }
 
 inline const Player &GamePosition::currentPlayer() const
