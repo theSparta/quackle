@@ -47,7 +47,7 @@ if __name__=="__main__":
     maxiter = 4
     itercounter = 0 # Number for new gen start
 
-    initweights = [1.0, 1.0, 0 , 0 , 0 , 0 , 0 , 0 ]
+    initweights = [1.0, 1.0, 0.01 , 0 , 0 , 0 , 0 , 0 ]
     # Feb 24: this achieves 45 percent winrate
     es = CMAEvolutionStrategy(initweights, 0.1, {'popsize':popsize, 'maxiter':maxiter,
     'fixed_variables':{0:1.0}}) # 'bounds': [0, 1]
