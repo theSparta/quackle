@@ -123,3 +123,26 @@ TwentySecondPlayer::TwentySecondPlayer()
 TwentySecondPlayer::~TwentySecondPlayer()
 {
 }
+
+TwoMinutePlayer::TwoMinutePlayer()
+{
+	m_name = MARK_UV("Two Minute Championship Player");
+	m_id = 5211;
+	m_parameters.secondsPerTurn = 60 * 2;
+}
+
+TwoMinutePlayer::~TwoMinutePlayer()
+{
+}
+
+
+NinetySecondPlayer::NinetySecondPlayer()
+{
+	m_name = MARK_UV("Ninety Second Championship Player");
+	m_id = 5212;
+	m_parameters.secondsPerTurn = 90;
+}
+
+NinetySecondPlayer::~NinetySecondPlayer()
+{
+}

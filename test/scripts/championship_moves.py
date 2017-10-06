@@ -10,7 +10,7 @@ import re
 
 # for reproducibility
 RANDOM_SEED = 42
-DIR_NAME="/home/rishabh/quackle/test"
+DIR_NAME =  os.path.dirname(os.getcwd())  #"/home/rishabh/quackle/test"
 np.random.seed(RANDOM_SEED)
 
 def parsemove(line):
@@ -81,7 +81,7 @@ if __name__ == '__main__':
     verbose = args.verbose
 
     if args.outfile is None:
-        outfile = os.path.join(DIR_NAME, 'best_moves.p')
+        outfile = os.path.join(DIR_NAME, 'expert/{}_best_moves.p'.format(args.player))
     else:
         outfile = args.outfile
 
@@ -93,6 +93,7 @@ if __name__ == '__main__':
     files =  sorted(os.listdir(dirname))[:int(args.num)]
     strs = [ "--position {}".format(os.path.join(args.directory, file))
 	       for file in files]
+    to_save = args.save
 
     if use_parallel:
         pool = multiprocessing.Pool(num_parallel)
@@ -110,8 +111,7 @@ if __name__ == '__main__':
             print("key {}".format(key))
     	    for k in moves[key][:2]:
     	    	print(k)
-    if args.save:
-    	outfile = os.path.join(DIR_NAME, outfile)
-#    	print("Saving to file %s" %(outfile,))
+    if to_save:
+        print("Saving to file %s" %(outfile,))
     	pickle.dump(moves, open(outfile, 'wb'))
     DEV_NULL.close()

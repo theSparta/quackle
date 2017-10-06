@@ -76,6 +76,22 @@ public:
 	virtual ComputerPlayer *clone() { return new TwentySecondPlayer; }
 };
 
+class TwoMinutePlayer : public Resolvent
+{
+public:
+	TwoMinutePlayer();
+	virtual ~TwoMinutePlayer();
+	virtual ComputerPlayer *clone() { return new TwoMinutePlayer; }
+};
+
+class NinetySecondPlayer : public Resolvent
+{
+public:
+	NinetySecondPlayer();
+	virtual ~NinetySecondPlayer();
+	virtual ComputerPlayer *clone() { return new NinetySecondPlayer; }
+};
+
 }
 
 #endif

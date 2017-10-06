@@ -48,6 +48,8 @@ ComputerPlayerCollection ComputerPlayerCollection::fullCollection()
 	ret.addPlayer(new StaticPlayer());
 	ret.addPlayer(new FiveMinutePlayer());
 	ret.addPlayer(new TwentySecondPlayer());
+	ret.addPlayer(new NinetySecondPlayer());
+	ret.addPlayer(new TwoMinutePlayer());
 	ret.addPlayer(new TorontoPlayer());
         //ret.addPlayer(new InferringPlayer());
 	return ret;
