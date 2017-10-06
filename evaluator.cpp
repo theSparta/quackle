@@ -72,9 +72,6 @@ double ScorePlusLeaveEvaluator::sharedConsideration(const GamePosition &position
 
 double ScorePlusLeaveEvaluator::leaveValue(const LetterString &leave) const
 {
-	if (!QUACKLE_STRATEGY_PARAMETERS->isInitialized())
-		return 0;
-
 	LetterString alphabetized = String::alphabetize(leave);
 
 	if (QUACKLE_STRATEGY_PARAMETERS->superleave(alphabetized))
@@ -166,23 +163,28 @@ double ScorePlusLeaveEvaluator::leaveValue(const LetterString &leave) const
 }
 
 vector<double> calcFeatures(const LetterString &);
-// vector<int> calcFeatures(const LetterString &);
 
-double ModifiedEvaluator::equity(const GamePosition &position, const Move &move) const
+std::vector<float> ModifiedEvaluator::getFeatures(const GamePosition &position, const Move &move) const
 {
-
-	vector<double> features(3);
+	std::vector<float> features(3);
 	LetterString leave = (position.currentPlayer().rack() - move).tiles();
 	features[0] = move.effectiveScore();
 	features[1] = leaveValue(leave);
 
 	leave = String::alphabetize(leave);
 	string leaveString = QUACKLE_ALPHABET_PARAMETERS->userVisible(leave);
+	cout << "$$" << leaveString << endl;
 	features[2] = QUACKLE_STRATEGY_PARAMETERS->synergy(leaveString);
 	vector<double> extra_features = calcFeatures(leave);
 
 	features.insert(features.end(), extra_features.begin(), extra_features.end());
 
+	return features;
+}
+
+double ModifiedEvaluator::equity(const GamePosition &position, const Move &move) const
+{
+	std::vector<float> features = getFeatures(position, move);
 	const int sz = coeffs.size();
 	double equity =  0;
 	for(int i = 0 ; i < sz ; i++)
@@ -190,29 +192,6 @@ double ModifiedEvaluator::equity(const GamePosition &position, const Move &move)
 
 	return equity;
 }
-
-// vector<int> calcFeatures(const LetterString & leave)
-// {
-// 	int vowelMinusCons = 0;
-// 	int num_blanks = 0;
-
-// 	const LetterString::const_iterator leaveEnd(leave.end());
-// 	for (LetterString::const_iterator leaveIt = leave.begin(); leaveIt != leaveEnd; ++leaveIt)
-// 	{
-// 		if (*leaveIt != QUACKLE_BLANK_MARK)
-// 		{
-// 			if (QUACKLE_ALPHABET_PARAMETERS->isVowel(*leaveIt))
-// 				vowelMinusCons++;
-// 			else
-// 				vowelMinusCons--;
-// 		}
-// 		else
-// 			num_blanks++;
-// 	}
-// 	vector<int> v = {vowelMinusCons, num_blanks};
-// 	return v;
-// }
-
 
 vector<double> calcFeatures(const LetterString & leave)
 {
@@ -260,7 +239,7 @@ vector<double> calcFeatures(const LetterString & leave)
 			    synergy += 1.5 * (synergy - 3.0);
 			}
 
-			features[2] = synergy;;
+			features[2] = synergy;
 		}
 	}
 

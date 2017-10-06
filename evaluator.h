@@ -75,6 +75,7 @@ public:
 	virtual ~ModifiedEvaluator() {};
 
 	double equity(const GamePosition & position, const Move & move) const;
+	vector<float> getFeatures(const GamePosition & position, const Move & move) const;
 
 private:
 	vector<double> coeffs;
