@@ -135,7 +135,6 @@ TwoMinutePlayer::~TwoMinutePlayer()
 {
 }
 
-
 NinetySecondPlayer::NinetySecondPlayer()
 {
 	m_name = MARK_UV("Ninety Second Championship Player");

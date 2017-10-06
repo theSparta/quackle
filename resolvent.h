@@ -91,7 +91,6 @@ public:
 	virtual ~NinetySecondPlayer();
 	virtual ComputerPlayer *clone() { return new NinetySecondPlayer; }
 };
-
 }
 
 #endif

@@ -55,8 +55,8 @@ int main()
 	if (seedRandoms)
 		dataManager.seedRandomNumbers('E' + 'm' + 'i' + 'l' + 'y' + 'Y' + 'K' + 'o');
 
-	const int gameCnt = 1000;
-	//const int gameCnt = 1;
+	// const int gameCnt = 1000;
+	const int gameCnt = 1;
 	for (int game = 0; game < gameCnt; ++game) {
 		testGame();
 	}
