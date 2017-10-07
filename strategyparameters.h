@@ -110,7 +110,7 @@ inline double StrategyParameters::bogowin(int lead, int unseen, int /* blanks */
 		else if (lead == 0) return 0.5;
 		else return 1;
 	}
-	
+
 	return m_bogowin[lead + 300][unseen];
 }
 
@@ -123,9 +123,45 @@ inline double StrategyParameters::superleave(LetterString leave)
 
 inline double StrategyParameters::synergy(string leave)
 {
+	double leaveVal = 0;
 	if(leave.length() == 0 || leave.length() == 7)
-		return 0.0;
-	return m_synergies[leave];
+		return leaveVal;
+	if(leave[0] == '?')
+	{
+		int maxIndex = 26;
+		for(const auto & c : leave)
+		{
+			if(c != '?')
+			{
+				maxIndex = c - 'A';
+				break;
+			}
+		}
+		for(int i = 0; i < maxIndex; i++)
+		{
+			leave[0] = 'A' + i;
+			if(leave.length() > 1 && leave[1] == '?')
+			{
+				for(int j = i; j < maxIndex; j++)
+				{
+					leave[1] = 'A' + j;
+					if(m_synergies.count(leave))
+						leaveVal = max(leaveVal, m_synergies[leave]);
+				}
+				leave[1] = '?';
+			}
+			else
+			{
+				if(m_synergies.count(leave))
+					leaveVal = max(leaveVal, m_synergies[leave]);
+			}
+		}
+	}
+	else if(m_synergies.count(leave))
+	{
+		leaveVal = m_synergies[leave];
+	}
+	return leaveVal;
 }
 
 }

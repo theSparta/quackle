@@ -173,7 +173,6 @@ std::vector<float> ModifiedEvaluator::getFeatures(const GamePosition &position, 
 
 	leave = String::alphabetize(leave);
 	string leaveString = QUACKLE_ALPHABET_PARAMETERS->userVisible(leave);
-	cout << "$$" << leaveString << endl;
 	features[2] = QUACKLE_STRATEGY_PARAMETERS->synergy(leaveString);
 	vector<double> extra_features = calcFeatures(leave);
 
@@ -195,7 +194,6 @@ double ModifiedEvaluator::equity(const GamePosition &position, const Move &move)
 
 vector<double> calcFeatures(const LetterString & leave)
 {
-	double synergy = 0;
 	LetterString uniqleave;
 
 	const LetterString::const_iterator leaveEnd(leave.end());
@@ -220,6 +218,7 @@ vector<double> calcFeatures(const LetterString & leave)
 			if (uniqleave[uniqleave.length() - 1] != leave[i])
 				uniqleave += leave[i];
 
+		double synergy = 0;
 		if (uniqleave.length() >= 2)
 		{
 			for (unsigned int i = 0; i < uniqleave.length() - 1; ++i)
