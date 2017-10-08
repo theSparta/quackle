@@ -31,7 +31,7 @@ def get_features(file):
 
 print("Getting features...")
 with Parallel(n_jobs = CPUs) as parallel:
-    moves_tuples = parallel(delayed(get_features)(file) for file in files)
+    moves_tuples = parallel(delayed(get_features)(file) for file in files[:100])
     moves_dict = dict(moves_tuples)
 
 print("Saving features in moves_dict.p...")
