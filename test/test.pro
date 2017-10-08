@@ -1,4 +1,4 @@
-TEMPLATE = app
+TE = app
 DEPENDPATH += .. ../quackleio
 INCLUDEPATH += . ..
 
@@ -28,7 +28,7 @@ win32:!win32-g++ {
 
 QMAKE_CXXFLAGS:!win32-msvc2013 += -std=c++11 -Wno-unknown-warning-option -Wno-deprecated-register
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++11 -fPIC
 
 # Input
 HEADERS += testharness.h trademarkedboards.h
@@ -38,3 +38,4 @@ SOURCES += testharness.cpp testmain.cpp trademarkedboards.cpp
 macx-g++ {
     QMAKE_CXXFLAGS += -fpermissive
 }
+
