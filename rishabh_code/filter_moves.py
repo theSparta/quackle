@@ -30,7 +30,7 @@ if __name__ == '__main__':
 	DATA_FILE = join(PARENT_DIR, 'test/expert/Ninety_Second_Championship_Player_best_moves.p')
 	NEW_DATA_FILE = join(PARENT_DIR, 'test/expert/Filtered_championship_moves.p')
 	print("Loading moves file...")
-	move_dict = pickle.load(open(DATA_FILE, 'r'))
+	move_dict = pickle.load(open(DATA_FILE, 'rb'))
 	print("Updating moves file...")
 	update(move_dict)
 	print("Saving moves file in {}...".format(NEW_DATA_FILE))
