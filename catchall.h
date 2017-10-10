@@ -39,7 +39,7 @@ class NewCatchallEvaluator : public ModifiedEvaluator
 public:
 	// Evaluator that returns score+leave equity for non-bag-empty positions,
 	// otherwise returns approximate endgame equity
-	NewCatchallEvaluator(vector<double> weights, const int & size=5) : ModifiedEvaluator(weights,size) {}
+	NewCatchallEvaluator(const int & size=5) : ModifiedEvaluator(size) {}
 	virtual double equity(const GamePosition &position, const Move &move) const;
 	double endgameResult(const GamePosition &position, const Move &move) const;
 

@@ -110,7 +110,7 @@ void TestHarness::executeFromArguments()
 	QString computer;
 	QString computer2;
 	QString seedString;
-	QString weightsSizeString;
+	QString featureSizeString;
 	QString repString;
 	QString weightsString;
 	bool build;
@@ -119,7 +119,7 @@ void TestHarness::executeFromArguments()
 	bool report;
 	unsigned int seed = numeric_limits<unsigned int>::max();
 	unsigned int reps = 1000;
-	weightsSize = 2;
+	featureSize = 8;
 
 	opts.addOption('c', "computer", &computer);
 	opts.addOption('d', "computer2", &computer2);
@@ -127,7 +127,7 @@ void TestHarness::executeFromArguments()
 	opts.addOption('l', "lexicon", &m_lexicon);
 	opts.addOption('m', "mode", &mode);
 	opts.addOption('s', "seed", &seedString);
-	opts.addOption('z', "weightsize", &weightsSizeString);
+	opts.addOption('z', "featureSize", &featureSizeString);
 	opts.addOption('r', "repetitions", &repString);
 	opts.addOption('t', "letters", &letters);
 	opts.addRepeatableOption("position", &m_positions);
@@ -162,19 +162,19 @@ void TestHarness::executeFromArguments()
 	        seed = seedString.toUInt();
 	if (!repString.isNull())
 	        reps = repString.toUInt();
-	if (!weightsSizeString.isNull())
-			weightsSize = weightsSizeString.toUInt();
+	if (!featureSizeString.isNull())
+	        featureSize = featureSizeString.toUInt();
 
-	if(!weightsString.isEmpty()){
-		QRegExp rx("(\\|)");
-		QStringList weightsList = weightsString.split(rx);
-		for (QStringList::iterator it = ++weightsList.begin(); it != weightsList.end(); ++it)
-			weights.push_back(it->toDouble());
-	}
-	else{
-		// this can be modified dependent upon the number of features used
-		weights = vector<double> (weightsSize, 1.0);
-	}
+	// if(!weightsString.isEmpty()){
+	// 	QRegExp rx("(\\|)");
+	// 	QStringList weightsList = weightsString.split(rx);
+	// 	for (QStringList::iterator it = ++weightsList.begin(); it != weightsList.end(); ++it)
+	// 		weights.push_back(it->toDouble());
+	// }
+	// else{
+	// 	// this can be modified dependent upon the number of features used
+	// 	weights = vector<double> (featureSize, 1.0);
+	// }
 
 	m_computerPlayerToTest = checkPlayerName(computer);
 	m_computerPlayer2ToTest = checkPlayerName(computer2);
@@ -248,7 +248,7 @@ void TestHarness::testFromFile(const QString &file)
 	if (game)
 	{
 		Quackle::GamePosition currPosition = game->currentPosition();
-		currPosition.currentPlayer().setEvaluator(new NewCatchallEvaluator(weights, weightsSize));
+		currPosition.currentPlayer().setEvaluator(new NewCatchallEvaluator(featureSize));
 		testPosition(currPosition, computerPlayerToTest());
 	}
 
@@ -704,7 +704,7 @@ void TestHarness::selfPlayGame(unsigned int gameNumber, bool reports, bool playa
 	Quackle::Player compyB(m_computerPlayer2ToTest->name() + MARK_UV(" B"), Quackle::Player::ComputerPlayerType, 1);
 	compyB.setAbbreviatedName(MARK_UV("B"));
 	compyB.setComputerPlayer(m_computerPlayer2ToTest);
-	Evaluator* compyBEvaluator = new NewCatchallEvaluator(weights, weightsSize);
+	Evaluator* compyBEvaluator = new NewCatchallEvaluator(featureSize);
 	compyB.setEvaluator(compyBEvaluator);
 	players.push_back(compyB);
 

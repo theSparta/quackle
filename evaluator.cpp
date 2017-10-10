@@ -184,11 +184,7 @@ std::vector<float> ModifiedEvaluator::getFeatures(const GamePosition &position, 
 double ModifiedEvaluator::equity(const GamePosition &position, const Move &move) const
 {
 	std::vector<float> features = getFeatures(position, move);
-	const int sz = coeffs.size();
-	double equity =  0;
-	for(int i = 0 ; i < sz ; i++)
-		equity += coeffs[i] * features[i];
-
+	double equity = nn->getOutput(features);
 	return equity;
 }
 

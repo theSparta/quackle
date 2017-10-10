@@ -17,7 +17,7 @@ release {
   DESTDIR = lib/release
 }
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++11 -Wall -w
 
 # enable/disable debug symbols
 #CONFIG += debug staticlib
@@ -26,8 +26,11 @@ CONFIG -= x11
 
 # Input
 HEADERS += *.h
+HEADERS += inference/infer.h
+INCLUDEPATH += inference/include
 
 SOURCES += $$files(*.cpp)
+SOURCES += inference/infer.cpp
 SOURCES -= \
 	loaddawg.cpp \
 	loadgaddag.cpp \
@@ -39,5 +42,5 @@ macx-g++ {
 }
 
 macx-xcode {
-	CONFIG += x86	
+	CONFIG += x86
 }

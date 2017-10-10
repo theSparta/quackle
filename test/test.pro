@@ -28,14 +28,16 @@ win32:!win32-g++ {
 
 QMAKE_CXXFLAGS:!win32-msvc2013 += -std=c++11 -Wno-unknown-warning-option -Wno-deprecated-register
 
-QMAKE_CXXFLAGS += -std=c++11 -fPIC
+QMAKE_CXXFLAGS += -std=c++11 -fPIC -Wall -w
 
 # Input
 HEADERS += testharness.h trademarkedboards.h
 SOURCES += testharness.cpp testmain.cpp trademarkedboards.cpp
-
+INCLUDEPATH += ../inference/include/
+QMAKE_RPATHDIR += ../inference/lib
+QMAKE_LFLAGS +=  -Wl,--allow-multiple-definition -Wl,--whole-archive
+LIBS += -L../inference/lib -ltensorflow_cc -ltensorflow_framework
 
 macx-g++ {
     QMAKE_CXXFLAGS += -fpermissive
 }
-

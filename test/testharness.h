@@ -116,8 +116,7 @@ protected:
 	QString m_gamesDir;
 	QString m_lexicon;
 	QString m_alphabet;
-	vector<double> weights;
-	unsigned int weightsSize;
+	unsigned int featureSize;
 };
 
 #endif

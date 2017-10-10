@@ -20,6 +20,7 @@
 #define QUACKLE_EVALUATOR_H
 
 #include "alphabetparameters.h"
+#include "inference/infer.h"
 
 namespace Quackle
 {
@@ -63,22 +64,18 @@ public:
 class ModifiedEvaluator: public ScorePlusLeaveEvaluator
 {
 public:
-	// Evaluator that takes a set of weights as coefficients for the following features: 
-	// Leave value
-	// Move score
-	ModifiedEvaluator(vector<double> weights, const unsigned int & size)
+	ModifiedEvaluator(const unsigned int & size)
 	{
-		// cout << size << " " << weights.size() << endl;
-		assert(weights.size() == size); // assuming for two features currently
-		coeffs = weights;
+		nn = new NNInference("/home/rishabh/quackle/rishabh_code/tensorflow_model/inference_graph.pb",
+			size);
 	}
-	virtual ~ModifiedEvaluator() {};
+	virtual ~ModifiedEvaluator() { delete nn;};
 
 	double equity(const GamePosition & position, const Move & move) const;
 	vector<float> getFeatures(const GamePosition & position, const Move & move) const;
 
 private:
-	vector<double> coeffs;
+	NNInference* nn;
 };
 
 }
