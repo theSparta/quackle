@@ -25,6 +25,7 @@
 
 #include <datamanager.h>
 #include <alphabetparameters.h>
+#include <experimental/filesystem>
 namespace Quackle
 {
 	class ComputerPlayer;

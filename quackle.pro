@@ -18,6 +18,7 @@ release {
 }
 
 QMAKE_CXXFLAGS += -std=c++11 -Wall -w
+QMAKE_LFLAGS += -lstdc++fs
 
 # enable/disable debug symbols
 #CONFIG += debug staticlib

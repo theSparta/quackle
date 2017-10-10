@@ -21,6 +21,7 @@
 
 #include "alphabetparameters.h"
 #include "inference/infer.h"
+#include <experimental/filesystem>
 
 namespace Quackle
 {
@@ -49,7 +50,7 @@ public:
 class ScorePlusLeaveEvaluator : public Evaluator
 {
 public:
-	virtual ~ScorePlusLeaveEvaluator() {};
+virtual ~ScorePlusLeaveEvaluator() {};
 
 	// Evaluator that always returns a score+leave equity
 	virtual double equity(const GamePosition &position, const Move &move) const;
@@ -66,8 +67,9 @@ class ModifiedEvaluator: public ScorePlusLeaveEvaluator
 public:
 	ModifiedEvaluator(const unsigned int & size)
 	{
-		nn = new NNInference("/home/rishabh/quackle/rishabh_code/tensorflow_model/inference_graph.pb",
-			size);
+		auto path = std::experimental::filesystem::current_path();
+	 	std::string inference_graph = std::string(path.parent_path()) + "/rishabh_code/tensorflow_model/inference_graph.pb";	
+		nn = new NNInference(inference_graph, size);
 	}
 	virtual ~ModifiedEvaluator() { delete nn;};
 

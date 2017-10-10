@@ -35,7 +35,7 @@ HEADERS += testharness.h trademarkedboards.h
 SOURCES += testharness.cpp testmain.cpp trademarkedboards.cpp
 INCLUDEPATH += ../inference/include/
 QMAKE_RPATHDIR += ../inference/lib
-QMAKE_LFLAGS +=  -Wl,--allow-multiple-definition -Wl,--whole-archive
+QMAKE_LFLAGS +=  -Wl,--allow-multiple-definition -Wl,--whole-archive -lstdc++fs
 LIBS += -L../inference/lib -ltensorflow_cc -ltensorflow_framework
 
 macx-g++ {
