@@ -248,7 +248,7 @@ void TestHarness::testFromFile(const QString &file)
 	if (game)
 	{
 		Quackle::GamePosition currPosition = game->currentPosition();
-		currPosition.currentPlayer().setEvaluator(new NewCatchallEvaluator(featureSize));
+		//currPosition.currentPlayer().setEvaluator(new NewCatchallEvaluator(featureSize));
 		testPosition(currPosition, computerPlayerToTest());
 	}
 

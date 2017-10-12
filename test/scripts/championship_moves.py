@@ -61,13 +61,13 @@ if __name__ == '__main__':
     DEV_NULL = open('/dev/null', 'w')
     parser = argparse.ArgumentParser()
     parser.add_argument("-o","--outfile", default=None)
-    parser.add_argument("-p", "--player", default="Five Minute Championship Player")
+    parser.add_argument("-p", "--player", default="Ninety Second Championship Player")
     parser.add_argument("-e", "--executable", default="./test")
     parser.add_argument("-d", "--directory", default = "gcg")
     parser.add_argument("--verbose", action="store_true", help="print output to terminal")
     parser.add_argument("--parallel", action="store_true",help="whether to use gnu parallel or not")
     parser.add_argument("--save", action="store_true", help="to save the moves to outfile")
-    parser.add_argument("-n", "--num", default=-1)
+    parser.add_argument("-n", "--num", default=None)
     args = parser.parse_args()
     use_parallel = args.parallel
     num_parallel = multiprocessing.cpu_count()
@@ -90,7 +90,10 @@ if __name__ == '__main__':
 
     dirname = os.path.join(DIR_NAME, args.directory)
     skip_len = len(args.directory) + 1
-    files =  sorted(os.listdir(dirname))[:int(args.num)]
+    files =  sorted(os.listdir(dirname))
+    if args.num is not None: 
+        num = int(args.num)
+        files = files[:num]
     strs = [ "--position {}".format(os.path.join(args.directory, file))
 	       for file in files]
     to_save = args.save

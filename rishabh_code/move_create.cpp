@@ -50,7 +50,7 @@ void Move_Create::init()
    	m_dataManager.lexiconParameters()->loadDawg(Quackle::LexiconParameters::findDictionaryFile("csw12.dawg"));
    	m_dataManager.lexiconParameters()->loadGaddag(Quackle::LexiconParameters::findDictionaryFile("csw12.gaddag"));
    	m_dataManager.strategyParameters()->initialize("csw12");
-	evaluator = new Quackle::ModifiedEvaluator(std::vector<double>(0), 0);
+	evaluator = new Quackle::ModifiedEvaluator(0);
 }
 
 void Move_Create::setGame(const string & gameFile)
