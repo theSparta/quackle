@@ -34,7 +34,8 @@ def chunks(l, n):
         yield l[i:i + n]
 
 def getMoves(command):
-    cmd_args = shlex.split(command)
+    index = command[0]
+    cmd_args = shlex.split(command[1])
     p1 = subprocess.Popen(cmd_args, cwd=DIR_NAME,stdout=subprocess.PIPE, stderr=DEV_NULL)
     moves = {}
     counter = -1
@@ -49,11 +50,14 @@ def getMoves(command):
             key = line.split(" ")[-1][skip_len:]
             moves[key] = []
 
-        if counter == 0 or counter == 1 :
+        if counter == 0:
             counter += 1
-        elif counter == 2:
+        elif counter == 1:
             moves[key].append(parsemove(line))
 
+    path = os.path.join(DIR_NAME, 'expert/pkl/{}.pkl'.format(index))
+    print("Saving to file %s" %(path,))
+    pickle.dump(moves, open(path, "wb"))
     return moves
 
 if __name__ == '__main__':
@@ -61,7 +65,7 @@ if __name__ == '__main__':
     DEV_NULL = open('/dev/null', 'w')
     parser = argparse.ArgumentParser()
     parser.add_argument("-o","--outfile", default=None)
-    parser.add_argument("-p", "--player", default="Ninety Second Championship Player")
+    parser.add_argument("-p", "--player", default="Five Minute Championship Player")
     parser.add_argument("-e", "--executable", default="./test")
     parser.add_argument("-d", "--directory", default = "gcg")
     parser.add_argument("--verbose", action="store_true", help="print output to terminal")
@@ -102,7 +106,8 @@ if __name__ == '__main__':
         pool = multiprocessing.Pool(num_parallel)
         commands = [command + " --seed=42 " +  " ".join(strlist)
                 for strlist in chunks(strs, (len(strs)//num_parallel) + 1)]
-        dicts = pool.map(getMoves,  commands)
+        command_tuples = [i for i in enumerate(commands)]
+        dicts = pool.map(getMoves,  command_tuples)
         moves = merge_dicts(dicts)
     else:
         command = command + " ".join(strs) 
@@ -114,6 +119,7 @@ if __name__ == '__main__':
             print("key {}".format(key))
     	    for k in moves[key][:2]:
     	    	print(k)
+            print("len {}".format(len(moves[key])))
     if to_save:
         print("Saving to file %s" %(outfile,))
     	pickle.dump(moves, open(outfile, 'wb'))

@@ -19,7 +19,7 @@ def limited_gpu_memory_session():
 class DataGenerator:
     """docstring for DataGenerator"""
     def __init__(self, X, num_train_frac = 0.96, batch_sz=512, load_from_file = False, 
-                 save_to_file = False, maxlen = 10, file = "experience_buffer.p"):
+                 save_to_file = False, maxlen = None, file = "experience_buffer.p"):
        
         assert(not(load_from_file and save_to_file))
         self.X = X 
@@ -30,11 +30,10 @@ class DataGenerator:
         else:
             experience_buffer = []
             for i, key in enumerate(self.keys):
-                arr = range(len(X[key])) #min(maxlen, len(X[key])))
+                arr = range(len(X[key]))
                 combinations = itertools.combinations(arr, 2)
                 for pair in combinations:
-                    if (pair[0] == 0 and pair[1] >= 2):
-                        #continue
+                    if (pair[0] <= 1 and pair[1] >= 1):
                         experience_buffer.append((i, pair[0], pair[1]))
             experience_buffer = np.array(experience_buffer)
             print("Experience buffer generated")
