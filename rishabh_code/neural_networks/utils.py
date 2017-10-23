@@ -33,7 +33,7 @@ class DataGenerator:
                 arr = range(len(X[key]))
                 combinations = itertools.combinations(arr, 2)
                 for pair in combinations:
-                    if (pair[0] <= 1 and pair[1] >= 1):
+                    if (pair[0] <= 2 and pair[1] >= 2):
                         experience_buffer.append((i, pair[0], pair[1]))
             experience_buffer = np.array(experience_buffer)
             print("Experience buffer generated")
