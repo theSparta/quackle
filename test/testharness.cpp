@@ -119,7 +119,7 @@ void TestHarness::executeFromArguments()
 	bool report;
 	unsigned int seed = numeric_limits<unsigned int>::max();
 	unsigned int reps = 1000;
-	featureSize = 8;
+	featureSize = -1;
 
 	opts.addOption('c', "computer", &computer);
 	opts.addOption('d', "computer2", &computer2);

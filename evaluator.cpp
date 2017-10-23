@@ -163,6 +163,24 @@ double ScorePlusLeaveEvaluator::leaveValue(const LetterString &leave) const
 }
 
 vector<double> calcFeatures(const LetterString &);
+vector<double> calcStateFeatures(const GamePosition & ,  const Move & );
+template <typename T>
+void count_vc_blanks(const T & leave, int & vowels, int & cons, int & num_blanks)
+{
+	vowels = cons = num_blanks = 0;
+	for (auto leaveIt = leave.begin(); leaveIt != leave.end(); ++leaveIt)
+	{
+		if (*leaveIt != QUACKLE_BLANK_MARK)
+		{
+			if (QUACKLE_ALPHABET_PARAMETERS->isVowel(*leaveIt))
+				vowels++;
+			else
+				cons++;
+		}
+		else
+			num_blanks++;
+	}
+}
 
 std::vector<float> ModifiedEvaluator::getFeatures(const GamePosition &position, const Move &move) const
 {
@@ -174,9 +192,11 @@ std::vector<float> ModifiedEvaluator::getFeatures(const GamePosition &position, 
 	leave = String::alphabetize(leave);
 	string leaveString = QUACKLE_ALPHABET_PARAMETERS->userVisible(leave);
 	features[2] = QUACKLE_STRATEGY_PARAMETERS->synergy(leaveString);
-	vector<double> extra_features = calcFeatures(leave);
+	vector<double> leave_features = calcFeatures(leave);
+	vector<double> state_features = calcStateFeatures(position, move);
 
-	features.insert(features.end(), extra_features.begin(), extra_features.end());
+	features.insert(features.end(), leave_features.begin(), leave_features.end());
+	features.insert(features.end(), state_features.begin(), state_features.end());
 
 	return features;
 }
@@ -238,22 +258,8 @@ vector<double> calcFeatures(const LetterString & leave)
 		}
 	}
 
-	int vowels = 0;
-	int cons = 0;
-	int num_blanks = 0;
-
-	for (LetterString::const_iterator leaveIt = leave.begin(); leaveIt != leaveEnd; ++leaveIt)
-	{
-		if (*leaveIt != QUACKLE_BLANK_MARK)
-		{
-			if (QUACKLE_ALPHABET_PARAMETERS->isVowel(*leaveIt))
-				vowels++;
-			else
-				cons++;
-		}
-		else
-			num_blanks++;
-	}
+	int vowels, cons, num_blanks;
+	count_vc_blanks(leave, vowels, cons, num_blanks);
 
 	const float vcvalues[8][8] =
 	{
@@ -270,5 +276,17 @@ vector<double> calcFeatures(const LetterString & leave)
 	features[3] = vcvalues[vowels][cons];
 	features[4] = num_blanks;
 
+	return features;
+}
+
+vector<double> calcStateFeatures(const GamePosition & position,  const Move & move)
+{
+	vector<double> features;
+	const LongLetterString tiles = position.unseenBag().tiles();
+	int vowels, cons, num_blanks;
+	count_vc_blanks(tiles, vowels, cons, num_blanks);
+	features.push_back(vowels - cons);
+	features.push_back(num_blanks);
+	features.push_back(position.bag().size());
 	return features;
 }
