@@ -28,8 +28,10 @@ if __name__ == '__main__':
 
     player = sys.argv[1]
     PARENT_DIR= dirname(dirname(abspath(__file__)))
-    DATA_FILE = join(PARENT_DIR, 'test/expert/Filtered_championship_moves.p') #.format(player))
-    NEW_DATA_FILE = join(PARENT_DIR, 'test/expert/Filtered_championship_moves.p')
+    DATA_FILE = join(PARENT_DIR,
+            'test/expert/{} Championship Player_best_moves.p'.format(player))
+    NEW_DATA_FILE = join(PARENT_DIR,
+            'test/expert/Filtered_championship_moves.p')
     print("Loading moves file...")
     move_dict = pickle.load(open(DATA_FILE, 'rb'))
     print("Updating moves file...")

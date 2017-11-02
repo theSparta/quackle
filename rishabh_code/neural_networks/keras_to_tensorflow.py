@@ -9,10 +9,13 @@ if (len(sys.argv) < 2):
     print("Please enter saved model file as argument")
     sys.exit(1)
 
-
 from keras.backend.tensorflow_backend import set_session
 from utils import limited_gpu_memory_session
 set_session(limited_gpu_memory_session())
+
+from keras.utils.generic_utils import get_custom_objects
+from utils import CustomInitializer
+get_custom_objects().update({'custom_initializer': CustomInitializer})
 
 from keras.models import load_model
 import tensorflow as tf

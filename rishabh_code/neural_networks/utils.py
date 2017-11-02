@@ -4,7 +4,18 @@ from collections import Counter
 import itertools
 import cPickle as pickle
 from tensorflow.python.client import device_lib
+import keras
 
+np.random.seed(42)
+
+class CustomInitializer:
+    def __call__(self, shape, dtype=None):
+        return custom_initializer(shape, dtype)
+        
+def custom_initializer(shape, dtype=None):
+    v = np.zeros(shape)
+    v[:2] = 1
+    return keras.backend.constant(v)
 
 def get_available_gpus():
     local_device_protos = device_lib.list_local_devices()
@@ -18,8 +29,8 @@ def limited_gpu_memory_session():
 
 class DataGenerator:
     """docstring for DataGenerator"""
-    def __init__(self, X, num_train_frac = 0.96, batch_sz=512, load_from_file = False, 
-                 save_to_file = False, maxlen = None, file = "experience_buffer.p"):
+    def __init__(self, X, num_train_frac = 0.98, batch_sz=512, load_from_file = False, 
+                 save_to_file = False, maxlen = 1, file = "experience_buffer.p"):
        
         assert(not(load_from_file and save_to_file))
         self.X = X 
@@ -33,7 +44,7 @@ class DataGenerator:
                 arr = range(len(X[key]))
                 combinations = itertools.combinations(arr, 2)
                 for pair in combinations:
-                    if (pair[0] <= 2 and pair[1] >= 2):
+                    if (pair[0] < maxlen and pair[1] < maxlen + 3):
                         experience_buffer.append((i, pair[0], pair[1]))
             experience_buffer = np.array(experience_buffer)
             print("Experience buffer generated")
@@ -63,20 +74,20 @@ class DataGenerator:
     
     def next_train(self):
         while True:
-            self.cur_train_index += self.batch_sz
             if self.cur_train_index >= self.samples_per_train:
                 self.cur_train_index = 0
             experience_tuple_list = self.experience_buffer_train[self.cur_train_index :
                 self.cur_train_index + self.batch_sz]
+            self.cur_train_index += self.batch_sz
             yield (self.gen_pairs(experience_tuple_list), np.ones(len(experience_tuple_list)))
     
     def next_val(self):
         while True:
-            self.cur_val_index += self.batch_sz
             if self.cur_val_index >= self.samples_per_val:
                 self.cur_val_index = 0
             experience_tuple_list = self.experience_buffer_val[self.cur_val_index :
                 self.cur_val_index + self.batch_sz]
+            self.cur_val_index += self.batch_sz
             yield (self.gen_pairs(experience_tuple_list), np.ones(len(experience_tuple_list)))
      
     def update_batch_size(self, batch_size):
