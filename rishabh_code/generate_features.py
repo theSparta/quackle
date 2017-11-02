@@ -23,8 +23,13 @@ def get_features(file):
     pymove = PyMove()
     pymove.setGame(join(GAMES_DIR, file))
     features = []
+    # init_board = pymove.board()
+    # print(init_board)
+    # boards = []
     for move in moves[file]:
         feature = pymove.getFeatures(move[0], move[1])
+        # board = pymove.boardAfterMoveMade()
+        # boards.append(board)
         features.append(feature)
     print("{} done!".format(file))
     return (file, features)

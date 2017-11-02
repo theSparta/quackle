@@ -21,6 +21,7 @@
 class Move_Create {
 private:
     Quackle::GamePosition currPosition;
+    Quackle::Move move;
     Quackle::Game *game;
     Quackle::Game* createNewGame(const string & filename);
 public:
@@ -30,4 +31,7 @@ public:
     static void init();
     void setGame(const string & filename);
     vector<float> getFeatures(const string & s1, const string & s2);
+    vector<string> getBoards();
+    string boardAfterMoveMade();
+    string board();
 };

@@ -22,12 +22,13 @@ Quackle::Game* Move_Create::createNewGame(const string & gameFile)
 
 void Move_Create::getMove(const string & s1, const string & s2)
 {
-	Quackle::Move m;
-	m = Quackle::Move::createPlaceMove(s1, QUACKLE_ALPHABET_PARAMETERS->encode(s2));
-	cout << m.effectiveScore() << endl;
-	UVcout << m.toString() << endl;
-	UVcout << currPosition << endl;
-
+	// Quackle::Move m;
+	move = Quackle::Move::createPlaceMove(s1, QUACKLE_ALPHABET_PARAMETERS->encode(s2));
+	cout << move.effectiveScore() << endl;
+	UVcout << move.toString() << endl;
+	// UVcout << currPosition.board().toString() << endl;
+	// currPosition.setMoveMade(move);
+	// UVcout << currPosition.boardAfterMoveMade().toString() << endl;
 }
 
 void Move_Create::init()
@@ -63,9 +64,20 @@ void Move_Create::setGame(const string & gameFile)
 	}
 }
 
+string Move_Create::board()
+{
+	return currPosition.board().toString();
+}
+
+string Move_Create::boardAfterMoveMade()
+{
+	currPosition.setMoveMade(move);
+	return currPosition.boardAfterMoveMade().toString();
+}
+
 vector<float> Move_Create::getFeatures(const string & s1, const string & s2)
 {
-	Quackle::Move move;
+	// Quackle::Move move;
 	if (s1.empty()){
 		move = Quackle::Move::createExchangeMove(
 			QUACKLE_ALPHABET_PARAMETERS->encode(s2), false);

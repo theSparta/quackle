@@ -11,6 +11,8 @@ cdef extern from "move_create.h":
         void setGame(const string &)
         @staticmethod
         void init()
+        string boardAfterMoveMade()
+        string board()
 
 
 cdef class PyMove:
@@ -26,6 +28,10 @@ cdef class PyMove:
         return self.thisptr.getMove(s1, s2)
     def getFeatures(self, s1, s2):
         return self.thisptr.getFeatures(s1, s2)
+    def board(self):
+        return self.thisptr.board()
+    def boardAfterMoveMade(self):
+        return self.thisptr.boardAfterMoveMade()
     @staticmethod
     def init():
         Move_Create.init()
