@@ -68,13 +68,13 @@ public:
 	ModifiedEvaluator(const unsigned int & size)
 	{
 		auto path = std::experimental::filesystem::current_path();
-	 	std::string inference_graph = std::string(path.parent_path()) + "/rishabh_code/tensorflow_model/inference_graph.pb";	
-		nn = new NNInference(inference_graph, size);
+	 	std::string inference_graph = std::string(path.parent_path()) + "/rishabh_code/tensorflow_model/inference_graph.pb";
+		nn = new NNInference(inference_graph);
 	}
 	virtual ~ModifiedEvaluator() { delete nn;};
 
 	double equity(const GamePosition & position, const Move & move) const;
-	vector<float> getFeatures(const GamePosition & position, const Move & move) const;
+	// vector<float> getFeatures(const GamePosition & position, const Move & move) const;
 
 private:
 	NNInference* nn;

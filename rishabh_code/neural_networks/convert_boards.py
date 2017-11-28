@@ -5,19 +5,28 @@ import cPickle as pickle
 
 N_CPU = mp.cpu_count()
 
+# Blank tile has value 0; tile_values[i] represents value of ith char starting from 'A'
+tile_values = [1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10]
+
 def convert_board(board):
     N = board.shape[0]
-    num_maps = 27
-    feature_maps = np.empty((N, N, num_maps), dtype='bool')
-    chars = [' ', "=", "'"]
+    num_maps = 28
+    feature_maps = np.empty((N, N, num_maps), dtype='int8')
+    chars = [' ', "'", '"', "-", "="] 
     feature_maps[:,:,0] = (board == chars[0])
+    feature_maps[:,:,-1] = 0
+    cond = False
     for c in chars[1:]:
-        feature_maps[:,:,0] |= (board == c)
-    for i in range(1, num_maps):
-        feature_maps[:,:,i] = (board == chr(ord('A') + i-1)) | \
-            (board == chr(ord('a')+ i - 1))
-    return feature_maps.astype('int8')
-
+        cond |= (board == c)
+    feature_maps[:,:,0] |= cond
+    feature_maps[:, :, -1] += cond * -1
+    for i in range(1, num_maps-1):
+        cond1 = (board == chr(ord('A') + i-1))
+        cond2 = (board == chr(ord('a') + i-1))
+        feature_maps[:,:,i] = cond1 | cond2
+        feature_maps[:, :, -1] += cond1 * tile_values[i-1]
+    
+    return feature_maps
 
 def convert_frac(board_args):
     keys = board_args.keys()

@@ -182,111 +182,122 @@ void count_vc_blanks(const T & leave, int & vowels, int & cons, int & num_blanks
 	}
 }
 
-std::vector<float> ModifiedEvaluator::getFeatures(const GamePosition &position, const Move &move) const
-{
-	std::vector<float> features(3);
-	LetterString leave = (position.currentPlayer().rack() - move).tiles();
-	features[0] = move.effectiveScore();
-	features[1] = leaveValue(leave);
+// std::vector<float> ModifiedEvaluator::getFeatures(const GamePosition &position, const Move &move) const
+// {
+// 	std::vector<float> features(3);
+// 	LetterString leave = (position.currentPlayer().rack() - move).tiles();
+// 	features[0] = move.effectiveScore();
+// 	features[1] = leaveValue(leave);
 
-	leave = String::alphabetize(leave);
-	string leaveString = QUACKLE_ALPHABET_PARAMETERS->userVisible(leave);
-	features[2] = QUACKLE_STRATEGY_PARAMETERS->synergy(leaveString);
-	vector<double> leave_features = calcFeatures(leave);
-	vector<double> state_features = calcStateFeatures(position, move);
+// 	leave = String::alphabetize(leave);
+// 	string leaveString = QUACKLE_ALPHABET_PARAMETERS->userVisible(leave);
+// 	features[2] = QUACKLE_STRATEGY_PARAMETERS->synergy(leaveString);
+// 	vector<double> leave_features = calcFeatures(leave);
+// 	vector<double> state_features = calcStateFeatures(position, move);
 
-	features.insert(features.end(), leave_features.begin(), leave_features.end());
-	features.insert(features.end(), state_features.begin(), state_features.end());
+// 	features.insert(features.end(), leave_features.begin(), leave_features.end());
+// 	features.insert(features.end(), state_features.begin(), state_features.end());
 
-	return features;
-}
+// 	return features;
+// }
 
 double ModifiedEvaluator::equity(const GamePosition &position, const Move &move) const
 {
-	std::vector<float> features = getFeatures(position, move);
-	double equity = nn->getOutput(features);
+	// std::vector<float> features = getFeatures(position, move);
+	std::vector<float> features(2);
+	LetterString leave = (position.currentPlayer().rack() - move).tiles();
+	features[0] = move.effectiveScore();
+	features[1] = leaveValue(leave);
+	auto curr_state = position.board().toFeatures();
+	auto next_state = position.boardAfterMoveMade().toFeatures();
+	// for(int i = 0; i < 15; i++){
+	// 	for(int j = 0; j < 15; j++)
+	// 		cout << curr_state[i][j] << " |";
+	// 	cout << endl;
+	// }
+	double equity = nn->getOutput(curr_state, next_state, features);
 	return equity;
 }
 
-vector<double> calcFeatures(const LetterString & leave)
-{
-	LetterString uniqleave;
+// vector<double> calcFeatures(const LetterString & leave)
+// {
+// 	LetterString uniqleave;
 
-	const LetterString::const_iterator leaveEnd(leave.end());
+// 	const LetterString::const_iterator leaveEnd(leave.end());
 
-	vector<double> features(5, 0.0);
+// 	vector<double> features(5, 0.0);
 
-	if (!leave.empty())
-	{
-		double leaveWorth = 0;
-		for (LetterString::const_iterator leaveIt = leave.begin(); leaveIt != leaveEnd; ++leaveIt)
-			leaveWorth += QUACKLE_STRATEGY_PARAMETERS->tileWorth(*leaveIt);
-		features[0] = leaveWorth;
+// 	if (!leave.empty())
+// 	{
+// 		double leaveWorth = 0;
+// 		for (LetterString::const_iterator leaveIt = leave.begin(); leaveIt != leaveEnd; ++leaveIt)
+// 			leaveWorth += QUACKLE_STRATEGY_PARAMETERS->tileWorth(*leaveIt);
+// 		features[0] = leaveWorth;
 
-		double synergyCont = 0;
-		for (unsigned int i = 0; i < leave.length() - 1; ++i)
-			if (leave[i] == leave[i + 1])
-				synergyCont += QUACKLE_STRATEGY_PARAMETERS->syn2(leave[i], leave[i]);
-		features[1] = synergyCont;
+// 		double synergyCont = 0;
+// 		for (unsigned int i = 0; i < leave.length() - 1; ++i)
+// 			if (leave[i] == leave[i + 1])
+// 				synergyCont += QUACKLE_STRATEGY_PARAMETERS->syn2(leave[i], leave[i]);
+// 		features[1] = synergyCont;
 
-		uniqleave += leave[0];
-		for (unsigned int i = 1; i < leave.length(); ++i)
-			if (uniqleave[uniqleave.length() - 1] != leave[i])
-				uniqleave += leave[i];
+// 		uniqleave += leave[0];
+// 		for (unsigned int i = 1; i < leave.length(); ++i)
+// 			if (uniqleave[uniqleave.length() - 1] != leave[i])
+// 				uniqleave += leave[i];
 
-		double synergy = 0;
-		if (uniqleave.length() >= 2)
-		{
-			for (unsigned int i = 0; i < uniqleave.length() - 1; ++i)
-				for (unsigned int j = i + 1; j < uniqleave.length(); ++j)
-					synergy += QUACKLE_STRATEGY_PARAMETERS->syn2(uniqleave[i], uniqleave[j]);
+// 		double synergy = 0;
+// 		if (uniqleave.length() >= 2)
+// 		{
+// 			for (unsigned int i = 0; i < uniqleave.length() - 1; ++i)
+// 				for (unsigned int j = i + 1; j < uniqleave.length(); ++j)
+// 					synergy += QUACKLE_STRATEGY_PARAMETERS->syn2(uniqleave[i], uniqleave[j]);
 
-			// TODO handle the Q
+// 			// TODO handle the Q
 
-			bool holding_bad_tile = false;
-			for (unsigned int i = 0; i < uniqleave.length(); ++i) {
-				if (QUACKLE_STRATEGY_PARAMETERS->tileWorth(uniqleave[i]) < -5.5) {
-					holding_bad_tile = true;
-				}
-			}
+// 			bool holding_bad_tile = false;
+// 			for (unsigned int i = 0; i < uniqleave.length(); ++i) {
+// 				if (QUACKLE_STRATEGY_PARAMETERS->tileWorth(uniqleave[i]) < -5.5) {
+// 					holding_bad_tile = true;
+// 				}
+// 			}
 
-			if ((synergy > 3.0) && !holding_bad_tile) {
-			    synergy += 1.5 * (synergy - 3.0);
-			}
+// 			if ((synergy > 3.0) && !holding_bad_tile) {
+// 			    synergy += 1.5 * (synergy - 3.0);
+// 			}
 
-			features[2] = synergy;
-		}
-	}
+// 			features[2] = synergy;
+// 		}
+// 	}
 
-	int vowels, cons, num_blanks;
-	count_vc_blanks(leave, vowels, cons, num_blanks);
+// 	int vowels, cons, num_blanks;
+// 	count_vc_blanks(leave, vowels, cons, num_blanks);
 
-	const float vcvalues[8][8] =
-	{
-		{  0.0,   0.0,  -1.0,  -2.5,  -5.0,  -8.5, -13.5, -18.5},
-		{ -1.0,   0.0,   0.5,   0.0,  -1.5,  -5.0, -10.0,   0.0},
-		{ -3.5,  -1.0,   0.5,   1.5,  -1.5,  -3.0,   0.0,   0.0},
-		{ -7.0,  -3.5,  -0.5,   2.5,   0.0,   0.0,   0.0,   0.0},
-		{-10.0,  -6.5,  -3.0,   0.0,   0.0,   0.0,   0.0,   0.0},
-		{-13.5, -11.5,  -8.0,   0.0,   0.0,   0.0,   0.0,   0.0},
-		{-18.5, -16.5,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0},
-		{-23.5,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0},
-	};
+// 	const float vcvalues[8][8] =
+// 	{
+// 		{  0.0,   0.0,  -1.0,  -2.5,  -5.0,  -8.5, -13.5, -18.5},
+// 		{ -1.0,   0.0,   0.5,   0.0,  -1.5,  -5.0, -10.0,   0.0},
+// 		{ -3.5,  -1.0,   0.5,   1.5,  -1.5,  -3.0,   0.0,   0.0},
+// 		{ -7.0,  -3.5,  -0.5,   2.5,   0.0,   0.0,   0.0,   0.0},
+// 		{-10.0,  -6.5,  -3.0,   0.0,   0.0,   0.0,   0.0,   0.0},
+// 		{-13.5, -11.5,  -8.0,   0.0,   0.0,   0.0,   0.0,   0.0},
+// 		{-18.5, -16.5,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0},
+// 		{-23.5,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0,   0.0},
+// 	};
 
-	features[3] = vcvalues[vowels][cons];
-	features[4] = num_blanks;
+// 	features[3] = vcvalues[vowels][cons];
+// 	features[4] = num_blanks;
 
-	return features;
-}
+// 	return features;
+// }
 
-vector<double> calcStateFeatures(const GamePosition & position,  const Move & move)
-{
-	vector<double> features;
-	const LongLetterString tiles = position.unseenBag().tiles();
-	int vowels, cons, num_blanks;
-	count_vc_blanks(tiles, vowels, cons, num_blanks);
-	features.push_back(vowels - cons);
-	features.push_back(num_blanks);
-	features.push_back(position.bag().size());
-	return features;
-}
+// vector<double> calcStateFeatures(const GamePosition & position,  const Move & move)
+// {
+// 	vector<double> features;
+// 	const LongLetterString tiles = position.unseenBag().tiles();
+// 	int vowels, cons, num_blanks;
+// 	count_vc_blanks(tiles, vowels, cons, num_blanks);
+// 	features.push_back(vowels - cons);
+// 	features.push_back(num_blanks);
+// 	features.push_back(position.bag().size());
+// 	return features;
+// }

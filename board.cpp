@@ -40,8 +40,8 @@ inline int wordMultiplier(int row, int column)
 }
 
 Board::Board()
-    : m_width(QUACKLE_BOARD_PARAMETERS->width()), 
-      m_height(QUACKLE_BOARD_PARAMETERS->height()), 
+    : m_width(QUACKLE_BOARD_PARAMETERS->width()),
+      m_height(QUACKLE_BOARD_PARAMETERS->height()),
       m_empty(true)
 {
 }
@@ -381,7 +381,7 @@ int Board::score(const Move &move, bool *isBingo) const
 
 						thishook *= wordMultiplier(move.startrow, i + move.startcol);
 						hookscore += thishook;
-					} 
+					}
 				}
 				else if (!m_isBlank[move.startrow][i + move.startcol])
 					mainscore += QUACKLE_ALPHABET_PARAMETERS->score(m_letters[move.startrow][i + move.startcol]);
@@ -496,7 +496,7 @@ LetterString Board::prettyTilesOfMove(const Move &move, bool markPlayThruTiles) 
 
 			ret += m_letters[currentTileRow][currentTileCol];
 		}
-		else 
+		else
 		{
 		        if (insidePlayThru) {
 			    assert(markPlayThruTiles);
@@ -631,6 +631,59 @@ UVString Board::toString() const
 		ss << "--";
 
 	return ss.str();
+}
+
+Feature Board::toFeatures() const
+{
+	vector<vector<char> > m_features = Feature(m_height, std::vector<char>(m_width));
+	// Feature m_features(m_height, vector<vector<short> >(m_width, vector<short>(28, 0)));
+	// short index, small_index;
+	// char current_char;
+	// bool cond;
+	string s;
+
+	for (int row = 0; row < m_height; row++)
+	{
+		for (int col = 0; col < m_width; col++)
+		{
+			if (m_letters[row][col] != QUACKLE_NULL_MARK)
+			{
+				s = QUACKLE_ALPHABET_PARAMETERS->userVisible(m_letters[row][col]);
+				if (s.length() > 1)
+					cout << s << endl;
+				m_features[row][col] = s[0];
+				// small_index = current_char - 'a' + 1;
+				// index = current_char - 'A' + 1;
+				// if(0 < index <= 26){
+				// 	m_features[row][col][index] = 1;
+				// 	if (!m_isBlank[row][col])
+				// 		m_features[row][col][27] = QUACKLE_ALPHABET_PARAMETERS->score(m_letters[row][col]);
+				// }
+				// else if(0 < small_index <= 26){
+				// 	m_features[row][col][small_index] = 1;
+				// 	m_features[row][col][27] = 0;
+				// }
+			}
+			else
+			{
+				if (letterMultiplier(row, col) == 2)
+					m_features[row][col] = '\'';
+				else if (letterMultiplier(row, col) == 3)
+					m_features[row][col] = '"';
+				else if (letterMultiplier(row, col) == 4)
+					m_features[row][col] = '^';
+				else if (wordMultiplier(row, col) == 2)
+					m_features[row][col] = '-';
+				else if (wordMultiplier(row, col) == 3)
+					m_features[row][col] = '=';
+				else if (wordMultiplier(row, col) == 4)
+					m_features[row][col] = '~';
+				else
+					m_features[row][col] = ' ';
+			}
+		}
+	}
+	return m_features;
 }
 
 UVString Board::htmlBoard(const int tileSize) const

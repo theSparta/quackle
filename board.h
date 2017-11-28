@@ -33,6 +33,8 @@ typedef bitset<QUACKLE_MAXIMUM_ALPHABET_SIZE> LetterBitset;
 
 #define QUACKLE_MAXIMUM_BOARD_SIZE LETTER_STRING_MAXIMUM_LENGTH
 #define QUACKLE_MINIMUM_BOARD_SIZE 7
+// #define QUACKLE_BOARD_SIZE 15
+typedef vector<vector<char> > Feature;
 
 namespace Quackle
 {
@@ -45,7 +47,7 @@ public:
     Board();
 
     // create uninitialized width x height board.
-    // Width and height must each be between 
+    // Width and height must each be between
     // QUACKLE_MINIMUM_BOARD_SIZE and QUACKLE_MAXIMUM_BOARD_SIZE.
     Board(int width, int height);
 
@@ -63,7 +65,7 @@ public:
 	void makeMove(const Move &move);
 
 	// Returns all words formed when play is made.
-	// If move.tiles() is only of length 1, specified move is not in the 
+	// If move.tiles() is only of length 1, specified move is not in the
 	// returned list; otherwise it is.
 	MoveList allWordsFormedBy(const Move &move) const;
 
@@ -90,6 +92,7 @@ public:
 	LetterString sanitizedTilesOfMove(const Move &move) const;
 
 	UVString toString() const;
+	Feature toFeatures() const;
 	UVString htmlBoard(const int tileSize) const;
 	UVString htmlKey() const;
 
