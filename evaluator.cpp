@@ -209,12 +209,10 @@ double ModifiedEvaluator::equity(const GamePosition &position, const Move &move)
 	features[0] = move.effectiveScore();
 	features[1] = leaveValue(leave);
 	auto curr_state = position.board().toFeatures();
-	auto next_state = position.boardAfterMoveMade().toFeatures();
-	// for(int i = 0; i < 15; i++){
-	// 	for(int j = 0; j < 15; j++)
-	// 		cout << curr_state[i][j] << " |";
-	// 	cout << endl;
-	// }
+	auto curr_position = GamePosition(position);
+	curr_position.setMoveMade(move);
+	auto next_state = curr_position.boardAfterMoveMade().toFeatures();
+	curr_position.resetMoveMade();
 	double equity = nn->getOutput(curr_state, next_state, features);
 	return equity;
 }
