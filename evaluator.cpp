@@ -173,7 +173,6 @@ std::vector<float> ModifiedEvaluator::getFeatures(const GamePosition &position, 
 
 	leave = String::alphabetize(leave);
 	string leaveString = QUACKLE_ALPHABET_PARAMETERS->userVisible(leave);
-	cout << "$$" << leaveString << endl;
 	features[2] = QUACKLE_STRATEGY_PARAMETERS->synergy(leaveString);
 	vector<double> extra_features = calcFeatures(leave);
 

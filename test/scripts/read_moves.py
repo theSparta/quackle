@@ -86,13 +86,13 @@ if __name__ == '__main__':
 
     command = "./test --mode=positions --lexicon=csw12 --computer=" + \
             player  + " -z {}".format(num_weights) + " --weights \"|" + \
-            "|".join(args.weights) + '" ' 
+            "|".join(args.weights) + '" '
 
     dirname = os.path.join(DIR_NAME, args.directory)
     skip_len = len(args.directory) + 1
     files =  sorted(os.listdir(dirname))[:int(args.num)]
     strs = [ "--position {}".format(os.path.join(args.directory, file))
-	       for file in files]
+            for file in files]
 
     if use_parallel:
         pool = multiprocessing.Pool(num_parallel)
@@ -101,17 +101,17 @@ if __name__ == '__main__':
         dicts = pool.map(getMoves,  commands)
         moves = merge_dicts(dicts)
     else:
-        command = command + " ".join(strs) 
+        command = command + " ".join(strs)
         moves = getMoves(command)
 
     if verbose:
         print(command)
-    	for key in sorted(moves.keys()):
+        for key in sorted(moves.keys()):
             print("key {}".format(key))
-    	    for k in moves[key][:2]:
-    	    	print(k)
+            for k in moves[key][:2]:
+                print(k)
     if args.save:
-    	outfile = os.path.join(DIR_NAME, outfile)
+        outfile = os.path.join(DIR_NAME, outfile)
 #    	print("Saving to file %s" %(outfile,))
-    	pickle.dump(moves, open(outfile, 'wb'))
+        pickle.dump(moves, open(outfile, 'wb'))
     DEV_NULL.close()
